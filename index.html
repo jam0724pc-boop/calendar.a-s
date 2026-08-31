@@ -57,12 +57,6 @@ button{font-family:inherit;color:inherit}
 .plan-chip{display:flex;align-items:center;gap:5px;background:var(--paper-deep);border-radius:20px;padding:5px 11px 5px 8px;font-size:.9rem;font-weight:700}
 .plan-chip .e{font-size:1.25rem}
 .nothing{margin-top:8px;font-size:.85rem;color:var(--ink-soft)}
-.go{
-  width:100%;margin-top:10px;border:none;border-radius:26px;padding:13px;cursor:pointer;
-  background:var(--theme);color:#fff;font-weight:700;font-size:1.05rem;box-shadow:0 3px 0 rgba(0,0,0,.14);
-}
-.go:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.14)}
-.go.done{background:#fff;color:var(--ink-soft);border:2px solid var(--line);box-shadow:none}
 
 .cd{display:flex;align-items:center;gap:11px;background:var(--green);color:#fff;border:none}
 .cd .e{font-size:2.2rem}
@@ -90,6 +84,29 @@ button{font-family:inherit;color:inherit}
 .nav button{min-width:46px;height:46px;border-radius:23px;border:2px solid var(--line);background:var(--paper);font-size:1.15rem;cursor:pointer;padding:0 14px}
 .nav .mode{font-size:.9rem;font-weight:700}
 .nav .mode[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+.modebtns{display:flex;gap:0;border:2px solid var(--line);border-radius:23px;overflow:hidden;background:var(--paper)}
+.modebtns button{border:none;background:none;height:42px;padding:0 15px;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:auto}
+.modebtns button[aria-pressed="true"]{background:var(--green);color:#fff}
+.dline .d{font-size:1.15rem;font-weight:700;line-height:1.3}
+.dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
+
+/* 3日ひょうじ */
+.three #dows{display:none}
+.three #grid{grid-template-columns:repeat(3,1fr)}
+.three .cell{aspect-ratio:auto;min-height:300px;padding:14px 16px;border-radius:16px}
+.three .cell .tag{align-self:flex-start;background:var(--paper-deep);border-radius:15px;padding:4px 14px;
+  font-size:.82rem;font-weight:700;color:var(--ink-soft);position:relative;z-index:2}
+.three .cell.today .tag{background:#e5648f;color:#fff}
+.three .cell .dowbig{font-size:1.4rem;font-weight:700;margin-top:12px;position:relative;z-index:2}
+.three .cell .numbig{font-size:2.5rem;font-weight:700;line-height:1.15;position:relative;z-index:2}
+.three .cell .yomi{font-size:.85rem;margin-top:4px}
+.three .cell .hol{font-size:.9rem;margin-top:3px}
+.three .cell .plans{margin-top:12px;position:relative;z-index:3}
+.three .cell .plan-chip{font-size:1.05rem;padding:7px 14px 7px 10px}
+.three .cell .plan-chip .e{font-size:1.8rem}
+.three .cell .st{position:absolute;right:16px;bottom:16px;top:auto;left:auto;transform:none;width:27%;aspect-ratio:1}
+.three .cell .st.new{animation:popw .52s cubic-bezier(.34,1.4,.5,1)}
+.three .cell .memo{font-size:.9rem;padding:3px 8px}
 
 .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .dow{display:flex;align-items:center;justify-content:center;gap:5px;padding:6px 2px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);font-size:.85rem;font-weight:700}
@@ -223,6 +240,8 @@ button{font-family:inherit;color:inherit}
   .month #grid{grid-auto-rows:1fr}
   .week #grid{grid-auto-rows:minmax(0,1fr)}
   .week .cell{min-height:0}
+  .three .cell{min-height:0}
+  .three #grid{grid-auto-rows:minmax(0,1fr)}
   .panel{
     left:50%;right:auto;bottom:auto;top:50%;width:min(760px,92vw);
     transform:translate(-50%,-46%) scale(.96);opacity:0;pointer-events:none;
@@ -251,13 +270,6 @@ button{font-family:inherit;color:inherit}
       <div class="lbl">きょう</div>
       <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d" id="tDate">—<small id="tYomi"></small></span></div>
       <div class="plans" id="tPlans"></div>
-      <button class="go" id="tGo">シールを はる</button>
-    </div>
-
-    <div class="card-box">
-      <div class="lbl">あした</div>
-      <div class="dline"><span class="ic" id="nIcon">🌙</span><span class="d" id="nDate">—<small id="nYomi"></small></span></div>
-      <div class="plans" id="nPlans"></div>
     </div>
 
     <div class="card-box cd" id="cdBox" style="display:none">
@@ -285,7 +297,11 @@ button{font-family:inherit;color:inherit}
         <div class="wareki" id="wareki"></div>
       </div>
       <div class="nav">
-        <button id="modeBtn" class="mode" aria-pressed="false">しゅう</button>
+        <span class="modebtns" id="modeBtns">
+          <button data-m="three" aria-pressed="false">3日</button>
+          <button data-m="week" aria-pressed="false">しゅう</button>
+          <button data-m="month" aria-pressed="true">つき</button>
+        </span>
         <button id="prev" aria-label="まえへ">◀</button>
         <button id="todayBtn" class="mode">きょう</button>
         <button id="next" aria-label="つぎへ">▶</button>
@@ -487,18 +503,11 @@ function planHTML(d){
   return p.map(id=>{const c=cardOf(id);return c?`<span class="plan-chip"><span class="e">${c.e}</span>${esc(c.n)}</span>`:"";}).join("");
 }
 function renderSide(){
-  const t=new Date(),n=addDays(t,1);
-  document.getElementById("tIcon").textContent=DOW[t.getDay()].ic;
-  document.getElementById("tDate").childNodes[0].nodeValue=`${t.getMonth()+1}がつ ${t.getDate()}にち`;
-  document.getElementById("tYomi").textContent=DOW[t.getDay()].nm;
-  document.getElementById("nIcon").textContent=DOW[n.getDay()].ic;
-  document.getElementById("nDate").childNodes[0].nodeValue=`${n.getMonth()+1}がつ ${n.getDate()}にち`;
-  document.getElementById("nYomi").textContent=DOW[n.getDay()].nm;
-  const tp=document.getElementById("tPlans"),np=document.getElementById("nPlans");
-  tp.innerHTML=planHTML(t)||`<span class="nothing">よていは ありません</span>`;
-  np.innerHTML=planHTML(n)||`<span class="nothing">よていは ありません</span>`;
-  const go=document.getElementById("tGo"),has=!!rec(t).s;
-  go.textContent=has?"はれました！":"シールを はる";go.classList.toggle("done",has);
+  const t=new Date(),w=t.getDay();
+  document.getElementById("tIcon").textContent=DOW[w].ic;
+  document.getElementById("tDate").childNodes[0].nodeValue=`${t.getMonth()+1}がつ ${t.getDate()}にち ${DOW[w].nm}`;
+  document.getElementById("tYomi").textContent=`${MYOMI[t.getMonth()+1]} ${YOMI[t.getDate()]} ${DOW[w].nm}`;
+  document.getElementById("tPlans").innerHTML=planHTML(t)||`<span class="nothing">よていは ありません</span>`;
 
   // カウントダウン
   const box=document.getElementById("cdBox");let found=null;
@@ -527,12 +536,41 @@ function cellHTML(d,hol){
   if(r.memo)s+=`<span class="memo">${esc(r.memo)}</span>`;
   return s;
 }
+function cellHTML3(d,hol,tag){
+  const r=rec(d),w=d.getDay();
+  let s=`<span class="tag">${tag}</span>
+    <span class="dowbig">${DOW[w].ic} ${DOW[w].nm}</span>
+    <span class="numbig">${d.getMonth()+1}がつ ${d.getDate()}にち</span>
+    <span class="yomi">${MYOMI[d.getMonth()+1]} ${YOMI[d.getDate()]}</span>`;
+  if(hol)s+=`<span class="hol">${hol}</span>`;
+  const p=r.p||[];
+  if(p.length){
+    s+=`<span class="plans">${p.map(id=>{const c=cardOf(id);
+      return c?`<span class="plan-chip"><span class="e">${c.e}</span>${esc(c.n)}</span>`:"";}).join("")}</span>`;
+  }
+  if(r.s){const sl=sealOf(r.s);if(sl)s+=`<span class="st ${justPlaced===key(d)?"new":""}" style="--sc:${sl.c}"></span>`;}
+  if(justPlaced===key(d))s+=`<span class="glow"></span>`;
+  if(r.memo)s+=`<span class="memo">${esc(r.memo)}</span>`;
+  return s;
+}
 function render(){
   const today=new Date();
   document.getElementById("app").className="app "+mode;
   const grid=document.getElementById("grid");grid.innerHTML="";
 
-  if(mode==="week"){
+  if(mode==="three"){
+    const y=view.getFullYear(),m=view.getMonth()+1;
+    document.getElementById("year").textContent=y+"ねん";
+    document.getElementById("month").textContent=m+"がつ";
+    document.getElementById("badge").textContent=m;
+    document.getElementById("wareki").textContent="きのう・きょう・あした";
+    ["きのう","きょう","あした"].forEach((tag,i)=>{
+      const d=addDays(view,i-1),hol=holidays(d.getFullYear(),d.getMonth()+1)[d.getDate()];
+      const c=document.createElement("button");
+      c.className=`cell s${d.getDay()}`+(hol?" holiday":"")+(same(d,today)?" today":"");
+      c.innerHTML=cellHTML3(d,hol,tag);c.onclick=()=>onCell(d);grid.appendChild(c);
+    });
+  }else if(mode==="week"){
     const start=addDays(view,-((view.getDay()+6)%7));
     const y=start.getFullYear(),m=start.getMonth()+1;
     document.getElementById("year").textContent=y+"ねん";
@@ -797,21 +835,23 @@ function closePanel(){
 }
 
 /* ===== そうさ ===== */
-document.getElementById("prev").onclick=()=>{mode==="week"?view=addDays(view,-7):view.setMonth(view.getMonth()-1);render();};
-document.getElementById("next").onclick=()=>{mode==="week"?view=addDays(view,7):view.setMonth(view.getMonth()+1);render();};
+function step(n){
+  if(mode==="three")view=addDays(view,n);
+  else if(mode==="week")view=addDays(view,n*7);
+  else view.setMonth(view.getMonth()+n);
+  render();
+}
+document.getElementById("prev").onclick=()=>step(-1);
+document.getElementById("next").onclick=()=>step(1);
 document.getElementById("todayBtn").onclick=()=>{view=new Date();render();};
-document.getElementById("modeBtn").onclick=e=>{
-  mode=mode==="month"?"week":"month";
-  e.currentTarget.textContent=mode==="month"?"しゅう":"つき";
-  e.currentTarget.setAttribute("aria-pressed",mode==="week");
-  view=new Date(view);render();
-};
-document.getElementById("tGo").onclick=()=>{
-  view=new Date();render();
-  if(planEdit){openDay(new Date());return;}
-  if(!held){hintStrip();return;}
-  place(new Date());
-};
+document.querySelectorAll("#modeBtns button").forEach(b=>{
+  b.onclick=()=>{
+    mode=b.dataset.m;
+    document.querySelectorAll("#modeBtns button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.m===mode));
+    if(mode==="three")view=new Date();
+    render();
+  };
+});
 document.getElementById("cfgClose").onclick=saveCfg;
 document.getElementById("cardClose").onclick=()=>{S.cards=S.cards.filter(c=>c.e.trim()&&c.n.trim());save();closePanel();};
 document.getElementById("settings").onclick=()=>needAdult(openCfg);
