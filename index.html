@@ -58,13 +58,6 @@ button{font-family:inherit;color:inherit}
 .plan-chip .e{font-size:1.25rem}
 .nothing{margin-top:8px;font-size:.85rem;color:var(--ink-soft)}
 
-.cd{display:flex;align-items:center;gap:12px;background:var(--green);color:#fff;border:none}
-.cd .e{font-size:2.3rem;flex:none}
-.cd .t{min-width:0}
-.cd .t small{display:block;font-size:.66rem;letter-spacing:.14em;opacity:.85;font-weight:700}
-.cd .t b{display:block;font-size:1.05rem;font-weight:700;margin:1px 0 2px}
-.cd .n{font-size:1.5rem;font-weight:900;line-height:1.1;display:block}
-.cd .n span{font-size:.8rem;font-weight:700}
 
 .count{background:#fff;border:2px solid var(--line);border-radius:16px;padding:11px 13px;font-weight:700}
 .count b{color:var(--theme);font-size:1.7rem;margin:0 4px}
@@ -273,11 +266,6 @@ button{font-family:inherit;color:inherit}
       <div class="lbl">きょう</div>
       <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d" id="tDate">—</span></div>
       <div class="plans" id="tPlans"></div>
-    </div>
-
-    <div class="card-box cd" id="cdBox" style="display:none">
-      <span class="e" id="cdE">🎂</span>
-      <span class="t"><small>つぎの よてい</small><b id="cdName"></b><span class="n" id="cdN"></span></span>
     </div>
 
     <div class="count">こんげつ<b id="cnt">0</b>こ たまったよ</div>
@@ -511,18 +499,7 @@ function renderSide(){
   document.getElementById("tDate").childNodes[0].nodeValue=`${t.getMonth()+1}がつ ${t.getDate()}にち ${DOW[w].nm}`;
   document.getElementById("tPlans").innerHTML=planHTML(t)||`<span class="nothing">よていは ありません</span>`;
 
-  // カウントダウン
-  const box=document.getElementById("cdBox");let found=null;
-  for(let i=0;i<=60;i++){
-    const d=addDays(t,i),p=rec(d).p||[];
-    if(p.length){const c=cardOf(p[0]);if(c){found={c,i};break;}}
-  }
-  if(found){
-    box.style.display="flex";
-    document.getElementById("cdE").textContent=found.c.e;
-    document.getElementById("cdName").textContent=found.c.n+(found.i===0?" は きょう":" まで");
-    document.getElementById("cdN").innerHTML=found.i===0?`きょう！`:(found.i===1?`あした！`:`あと <span>のこり</span>${found.i}<span>にち</span>`);
-  }else box.style.display="none";
+
 }
 function cellHTML(d,hol){
   const r=rec(d),w=d.getDay(),wk=mode==="week";
