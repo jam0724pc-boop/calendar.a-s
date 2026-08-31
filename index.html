@@ -186,6 +186,22 @@ button{font-family:inherit;color:inherit}
 .banner{display:none;align-items:center;gap:8px;background:#e7f0f9;border:2px solid #2f6fae;color:#22537f;
   border-radius:12px;padding:9px 13px;margin-bottom:10px;font-weight:700;font-size:.92rem}
 .banner.on{display:flex}
+.strip{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--paper-deep);
+  border:2px dashed var(--line);border-radius:14px;padding:9px 11px;margin-bottom:10px}
+.strip .s{width:50px;height:50px;border-radius:50%;border:none;background:var(--sc);cursor:pointer;
+  box-shadow:inset -2px -3px 6px rgba(0,0,0,.12),0 2px 3px rgba(80,60,40,.2);transition:transform .12s,box-shadow .12s;padding:0}
+.strip .s[aria-pressed="true"]{transform:translateY(-8px) scale(1.14);
+  box-shadow:inset -2px -3px 6px rgba(0,0,0,.12),0 9px 13px rgba(80,60,40,.32),0 0 0 3px #fff,0 0 0 6px var(--ink)}
+.strip .er{background:#fff;border:2px dashed #b9ac97;display:grid;place-items:center;font-size:1.15rem;color:var(--ink-soft);font-weight:700}
+.strip .msg{margin-left:6px;font-weight:700;font-size:.92rem;color:var(--ink-soft)}
+.strip .undo{margin-left:auto;border:2px solid var(--line);background:#fff;border-radius:24px;
+  padding:11px 16px;font-weight:700;font-size:.92rem;cursor:pointer}
+.strip .undo:disabled{opacity:.35;cursor:not-allowed}
+.strip.hint{animation:hint .6s}
+@keyframes hint{0%,100%{transform:none}25%{transform:translateY(-5px)}50%{transform:translateY(3px)}75%{transform:translateY(-2px)}}
+.holding #grid .cell:not(.empty){box-shadow:0 0 0 2px rgba(175,163,140,.4) inset}
+.holding #grid .cell:not(.empty):active{transform:scale(.97)}
+@media (max-width:899px){.strip .s{width:40px;height:40px}.strip .msg{display:none}}
 .pinview{display:flex;justify-content:center;gap:14px;margin:6px 0 16px}
 .pinview i{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--line)}
 .pinview i.on{background:var(--ink);border-color:var(--ink)}
@@ -261,7 +277,7 @@ button{font-family:inherit;color:inherit}
     </div>
   </div>
 
-  <div class="sheet">
+  <div class="sheet" id="sheet">
     <div class="head">
       <div class="badge" id="badge">8</div>
       <div>
@@ -275,6 +291,7 @@ button{font-family:inherit;color:inherit}
         <button id="next" aria-label="つぎへ">▶</button>
       </div>
     </div>
+    <div class="strip" id="strip"></div>
     <div class="banner" id="planBanner">📝 よていを いれる日を えらんでください</div>
     <div class="grid" id="dows"></div>
     <div class="grid" id="grid"></div>
@@ -282,14 +299,6 @@ button{font-family:inherit;color:inherit}
 </div>
 
 <div class="ovl" id="ovl"></div>
-
-<div class="panel" id="panel" role="dialog" aria-modal="true">
-  <h2 id="pTitle"></h2>
-  <div class="sub" id="pSub"></div>
-  <div class="sec">シール</div>
-  <div class="picker" id="sealPick"></div>
-  <button class="close" id="pClose">できた</button>
-</div>
 
 <div class="panel" id="planPanel" role="dialog" aria-modal="true">
   <h2 id="qTitle"></h2>
@@ -402,7 +411,8 @@ let S={
   pin:"5225", cv:3, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
 };
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
-let adult=false, adultTimer=null, pinBuf="", pinThen=null, planEdit=false, pickedFx=null;
+let adult=false, adultTimer=null, pinBuf="", pinThen=null, planEdit=false;
+let held=null, hist=[];
 
 const SEALS=[
   {id:"red",nm:"あか",c:"#e03b3b"},{id:"pink",nm:"ピンク",c:"#ee7ba8"},
@@ -533,7 +543,7 @@ function render(){
       const d=addDays(start,i),hol=holidays(d.getFullYear(),d.getMonth()+1)[d.getDate()];
       const c=document.createElement("button");
       c.className=`cell s${d.getDay()}`+(hol?" holiday":"")+(same(d,today)?" today":"");
-      c.innerHTML=cellHTML(d,hol);c.onclick=()=>openDay(d);grid.appendChild(c);
+      c.innerHTML=cellHTML(d,hol);c.onclick=()=>onCell(d);grid.appendChild(c);
     }
   }else{
     const y=view.getFullYear(),m=view.getMonth()+1;
@@ -547,7 +557,7 @@ function render(){
       const date=new Date(y,m-1,d);
       const c=document.createElement("button");
       c.className=`cell s${date.getDay()}`+(hol[d]?" holiday":"")+(same(date,today)?" today":"");
-      c.innerHTML=cellHTML(date,hol[d]);c.onclick=()=>openDay(date);grid.appendChild(c);
+      c.innerHTML=cellHTML(date,hol[d]);c.onclick=()=>onCell(date);grid.appendChild(c);
     }
   }
   // こんげつの まいすう
@@ -557,39 +567,81 @@ function render(){
   });
   document.getElementById("cnt").textContent=cnt;
   justPlaced=null;
+  renderStrip();
   renderSide();
 }
 
-/* ===== 1にちの パネル ===== */
+/* ===== シール台紙（もって → 日をタップ） ===== */
+function renderStrip(){
+  const el=document.getElementById("strip");el.innerHTML="";
+  SEALS.forEach(s=>{
+    const b=document.createElement("button");
+    b.className="s";b.style.setProperty("--sc",s.c);
+    b.setAttribute("aria-pressed",held===s.id);b.setAttribute("aria-label",s.nm);b.title=s.nm;
+    b.onclick=()=>hold(s.id);el.appendChild(b);
+  });
+  const e=document.createElement("button");
+  e.className="s er";e.textContent="✕";e.title="けす";e.setAttribute("aria-label","けす");
+  e.setAttribute("aria-pressed",held==="erase");
+  e.onclick=()=>hold("erase");el.appendChild(e);
+
+  const m=document.createElement("span");m.className="msg";
+  m.textContent=held?(held==="erase"?"けす日を えらんでね":"どの日に はる？"):"シールを えらんでね";
+  el.appendChild(m);
+
+  const u=document.createElement("button");
+  u.className="undo";u.textContent="↩ もどす";u.disabled=!hist.length;
+  u.onclick=undo;el.appendChild(u);
+}
+function hold(id){
+  held=(held===id)?null:id;
+  document.getElementById("sheet").classList.toggle("holding",!!held);
+  renderStrip();
+}
+function hintStrip(){
+  const st=document.getElementById("strip");
+  st.classList.remove("hint");void st.offsetWidth;st.classList.add("hint");
+}
+function place(d){
+  const k=key(d);
+  S.data[current]=S.data[current]||{};
+  const r=S.data[current][k]||{};
+  const prev=r.s||null;
+  if(held==="erase"){
+    if(!prev){hintStrip();return;}
+    delete r.s;
+  }else{
+    if(prev===held)return;
+    r.s=held;justPlaced=k;
+  }
+  hist.push({k:current,d:k,prev});if(hist.length>30)hist.shift();
+  if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
+  save();render();
+}
+function undo(){
+  const h=hist.pop();if(!h)return;
+  const days=S.data[h.k]=S.data[h.k]||{};
+  const r=days[h.d]||{};
+  if(h.prev)r.s=h.prev;else delete r.s;
+  if(Object.keys(r).length)days[h.d]=r;else delete days[h.d];
+  if(current!==h.k){current=h.k;renderKids();}
+  const [yy,mm]=h.d.split("-");view=new Date(+yy,+mm-1,1);
+  save();render();
+}
+function onCell(d){
+  if(planEdit){openDay(d);return;}
+  if(!held){hintStrip();return;}
+  place(d);
+}
+
+/* ===== よていの パネル ===== */
 function openDay(d){
   picking=d;
-  if(planEdit){
-    document.getElementById("qTitle").textContent=`${d.getMonth()+1}がつ ${d.getDate()}にち`;
-    document.getElementById("qSub").textContent=`${YOMI[d.getDate()]}・${DOW[d.getDay()].nm}`;
-    document.getElementById("memo").value=rec(d).memo||"";
-    drawPlans();
-    openPanel("planPanel");
-    return;
-  }
-  document.getElementById("pTitle").textContent=`${d.getMonth()+1}がつ ${d.getDate()}にち`;
-  document.getElementById("pSub").textContent=`${YOMI[d.getDate()]}・${DOW[d.getDay()].nm}`;
-  drawSeals();
-  openPanel("panel");
-}
-function drawSeals(){
-  const r=rec(picking);
-  const sp=document.getElementById("sealPick");sp.innerHTML="";
-  SEALS.forEach(s=>{
-    const b=document.createElement("button");b.className="pick";
-    b.setAttribute("aria-pressed",r.s===s.id);
-    b.innerHTML=`<span class="sw ${s.g?"glyph":""}" style="--sc:${s.c}">${s.g||""}</span><span class="nm">${s.nm}</span>`;
-    if(pickedFx===s.id)b.classList.add("boing");
-    b.onclick=()=>setSeal(s.id);sp.appendChild(b);
-  });
-  pickedFx=null;
-  const e=document.createElement("button");e.className="pick erase";
-  e.innerHTML=`<span class="sw">✕</span><span class="nm">けす</span>`;
-  e.onclick=()=>setSeal(null);sp.appendChild(e);
+  document.getElementById("qTitle").textContent=`${d.getMonth()+1}がつ ${d.getDate()}にち`;
+  document.getElementById("qSub").textContent=`${YOMI[d.getDate()]}・${DOW[d.getDay()].nm}`;
+  document.getElementById("memo").value=rec(d).memo||"";
+  drawPlans();
+  openPanel("planPanel");
 }
 function drawPlans(){
   const cur=rec(picking).p||[];
@@ -610,17 +662,6 @@ function touch(){
 function tidy(){
   const k=key(picking),r=S.data[current][k];
   if(r&&!r.s&&!(r.p&&r.p.length)&&!r.memo)delete S.data[current][k];
-}
-function setSeal(id){
-  const r=touch();
-  if(id&&r.s!==id){
-    r.s=id;justPlaced=key(picking);pickedFx=id;
-    tidy();save();drawSeals();
-    setTimeout(()=>{if(document.getElementById("panel").classList.contains("on"))closePanel();},430);
-    return;
-  }
-  delete r.s;justPlaced=null;
-  tidy();save();drawSeals();render();
 }
 function togglePlan(id){
   const r=touch();r.p=r.p||[];
@@ -751,7 +792,7 @@ document.getElementById("addCard").onclick=()=>{
 function openPanel(id){document.getElementById("ovl").classList.add("on");document.getElementById(id).classList.add("on");}
 function closePanel(){
   document.getElementById("ovl").classList.remove("on");
-  ["panel","cfg","cardPanel","lockPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
+  ["cfg","cardPanel","lockPanel","planPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
   render();
 }
 
@@ -765,8 +806,12 @@ document.getElementById("modeBtn").onclick=e=>{
   e.currentTarget.setAttribute("aria-pressed",mode==="week");
   view=new Date(view);render();
 };
-document.getElementById("tGo").onclick=()=>{view=new Date();render();openDay(new Date());};
-document.getElementById("pClose").onclick=closePanel;
+document.getElementById("tGo").onclick=()=>{
+  view=new Date();render();
+  if(planEdit){openDay(new Date());return;}
+  if(!held){hintStrip();return;}
+  place(new Date());
+};
 document.getElementById("cfgClose").onclick=saveCfg;
 document.getElementById("cardClose").onclick=()=>{S.cards=S.cards.filter(c=>c.e.trim()&&c.n.trim());save();closePanel();};
 document.getElementById("settings").onclick=()=>needAdult(openCfg);
