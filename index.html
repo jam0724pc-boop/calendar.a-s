@@ -87,7 +87,7 @@ button{font-family:inherit;color:inherit}
 .modebtns{display:flex;gap:0;border:2px solid var(--line);border-radius:23px;overflow:hidden;background:var(--paper)}
 .modebtns button{border:none;background:none;height:42px;padding:0 15px;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:auto}
 .modebtns button[aria-pressed="true"]{background:var(--green);color:#fff}
-.dline .d{font-size:1.15rem;font-weight:700;line-height:1.3}
+.dline .d{font-size:1.2rem;font-weight:700;line-height:1.35}
 .dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
 
 /* 3日ひょうじ */
@@ -268,7 +268,7 @@ button{font-family:inherit;color:inherit}
 
     <div class="card-box now">
       <div class="lbl">きょう</div>
-      <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d" id="tDate">—<small id="tYomi"></small></span></div>
+      <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d" id="tDate">—</span></div>
       <div class="plans" id="tPlans"></div>
     </div>
 
@@ -506,7 +506,6 @@ function renderSide(){
   const t=new Date(),w=t.getDay();
   document.getElementById("tIcon").textContent=DOW[w].ic;
   document.getElementById("tDate").childNodes[0].nodeValue=`${t.getMonth()+1}がつ ${t.getDate()}にち ${DOW[w].nm}`;
-  document.getElementById("tYomi").textContent=`${MYOMI[t.getMonth()+1]} ${YOMI[t.getDate()]} ${DOW[w].nm}`;
   document.getElementById("tPlans").innerHTML=planHTML(t)||`<span class="nothing">よていは ありません</span>`;
 
   // カウントダウン
@@ -540,8 +539,7 @@ function cellHTML3(d,hol,tag){
   const r=rec(d),w=d.getDay();
   let s=`<span class="tag">${tag}</span>
     <span class="dowbig">${DOW[w].ic} ${DOW[w].nm}</span>
-    <span class="numbig">${d.getMonth()+1}がつ ${d.getDate()}にち</span>
-    <span class="yomi">${MYOMI[d.getMonth()+1]} ${YOMI[d.getDate()]}</span>`;
+    <span class="numbig">${d.getMonth()+1}がつ ${d.getDate()}にち</span>`;
   if(hol)s+=`<span class="hol">${hol}</span>`;
   const p=r.p||[];
   if(p.length){
