@@ -58,11 +58,13 @@ button{font-family:inherit;color:inherit}
 .plan-chip .e{font-size:1.25rem}
 .nothing{margin-top:8px;font-size:.85rem;color:var(--ink-soft)}
 
-.cd{display:flex;align-items:center;gap:11px;background:var(--green);color:#fff;border:none}
-.cd .e{font-size:2.2rem}
-.cd .t{font-size:1rem;font-weight:700}
-.cd .n{font-size:2rem;font-weight:900;line-height:1}
-.cd .n span{font-size:.85rem;font-weight:700}
+.cd{display:flex;align-items:center;gap:12px;background:var(--green);color:#fff;border:none}
+.cd .e{font-size:2.3rem;flex:none}
+.cd .t{min-width:0}
+.cd .t small{display:block;font-size:.66rem;letter-spacing:.14em;opacity:.85;font-weight:700}
+.cd .t b{display:block;font-size:1.05rem;font-weight:700;margin:1px 0 2px}
+.cd .n{font-size:1.5rem;font-weight:900;line-height:1.1;display:block}
+.cd .n span{font-size:.8rem;font-weight:700}
 
 .count{background:#fff;border:2px solid var(--line);border-radius:16px;padding:11px 13px;font-weight:700}
 .count b{color:var(--theme);font-size:1.7rem;margin:0 4px}
@@ -85,7 +87,7 @@ button{font-family:inherit;color:inherit}
 .nav .mode{font-size:.9rem;font-weight:700}
 .nav .mode[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
 .modebtns{display:flex;gap:0;border:2px solid var(--line);border-radius:23px;overflow:hidden;background:var(--paper)}
-.modebtns button{border:none;background:none;height:42px;padding:0 15px;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:auto}
+.modebtns button{border:none;background:none;height:42px;width:88px;padding:0;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:0;text-align:center}
 .modebtns button[aria-pressed="true"]{background:var(--green);color:#fff}
 .dline .d{font-size:1.2rem;font-weight:700;line-height:1.35}
 .dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
@@ -218,7 +220,8 @@ button{font-family:inherit;color:inherit}
 @keyframes hint{0%,100%{transform:none}25%{transform:translateY(-5px)}50%{transform:translateY(3px)}75%{transform:translateY(-2px)}}
 .holding #grid .cell:not(.empty){box-shadow:0 0 0 2px rgba(175,163,140,.4) inset}
 .holding #grid .cell:not(.empty):active{transform:scale(.97)}
-@media (max-width:899px){.strip .s{width:40px;height:40px}.strip .msg{display:none}}
+@media (max-width:899px){.strip .s{width:40px;height:40px}.strip .msg{display:none}
+  .modebtns button{width:68px;font-size:.82rem}}
 .pinview{display:flex;justify-content:center;gap:14px;margin:6px 0 16px}
 .pinview i{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--line)}
 .pinview i.on{background:var(--ink);border-color:var(--ink)}
@@ -274,7 +277,7 @@ button{font-family:inherit;color:inherit}
 
     <div class="card-box cd" id="cdBox" style="display:none">
       <span class="e" id="cdE">🎂</span>
-      <span class="t"><span id="cdName"></span><br><span class="n" id="cdN"></span></span>
+      <span class="t"><small>つぎの よてい</small><b id="cdName"></b><span class="n" id="cdN"></span></span>
     </div>
 
     <div class="count">こんげつ<b id="cnt">0</b>こ たまったよ</div>
@@ -298,9 +301,9 @@ button{font-family:inherit;color:inherit}
       </div>
       <div class="nav">
         <span class="modebtns" id="modeBtns">
-          <button data-m="three" aria-pressed="false">3日</button>
-          <button data-m="week" aria-pressed="false">しゅう</button>
-          <button data-m="month" aria-pressed="true">つき</button>
+          <button data-m="three" aria-pressed="false">3日間</button>
+          <button data-m="week" aria-pressed="false">1週間</button>
+          <button data-m="month" aria-pressed="true">1か月</button>
         </span>
         <button id="prev" aria-label="まえへ">◀</button>
         <button id="todayBtn" class="mode">きょう</button>
