@@ -261,6 +261,9 @@ button{font-family:inherit;color:inherit}
 .banner{display:none;align-items:center;gap:8px;background:#e7f0f9;border:2px solid #2f6fae;color:#22537f;
   border-radius:12px;padding:9px 13px;margin-bottom:10px;font-weight:700;font-size:.92rem}
 .banner.on{display:flex}
+.banner.warm{background:#fbf0e0;border-color:#c9873a;color:#8a5a1f}
+.banner button{margin-left:auto;border:2px solid currentColor;background:#fff;color:inherit;
+  border-radius:20px;padding:5px 14px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
 .strip{display:flex;flex-direction:column;gap:9px;padding:11px 10px 12px;border-radius:14px;background:#f7f1e4;
   box-shadow:0 0 0 1.5px #ded3bd inset,0 0 0 5px #fdfbf5 inset,0 2px 8px rgba(120,100,70,.10)}
 .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;justify-items:center}
@@ -366,6 +369,7 @@ button{font-family:inherit;color:inherit}
       </div>
     </div>
     <div class="banner" id="planBanner">📝 よていを いれる日を えらんでください</div>
+    <div class="banner warm" id="freeBanner">🗓 はりわすれた日に シールを はれます<button id="freeEnd">おわり</button></div>
     <div class="table" id="table">
       <div class="grid" id="dows"></div>
       <div class="grid" id="grid"></div>
@@ -401,6 +405,7 @@ button{font-family:inherit;color:inherit}
   <h2>なまえの せってい</h2>
   <div class="sub">おなまえ・よみがな・いろを かえられます</div>
   <div id="cfgFields"></div>
+  <button class="addbtn" id="toFree">🗓 はりわすれた シールを はる</button>
   <button class="addbtn" id="toCards">🎴 よていカードを へんしゅうする</button>
   <button class="close" id="cfgClose">ほぞんして とじる</button>
 </div>
