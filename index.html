@@ -402,12 +402,11 @@ button{font-family:inherit;color:inherit}
 
 
 <div class="panel" id="cfg" role="dialog" aria-modal="true">
-  <h2>なまえの せってい</h2>
-  <div class="sub">おなまえ・よみがな・いろを かえられます</div>
-  <div id="cfgFields"></div>
+  <h2>せってい</h2>
+  <div class="sub">おうちの人が つかう きのうです</div>
   <button class="addbtn" id="toFree">🗓 はりわすれた シールを はる</button>
   <button class="addbtn" id="toCards">🎴 よていカードを へんしゅうする</button>
-  <button class="close" id="cfgClose">ほぞんして とじる</button>
+  <button class="close" id="cfgClose">とじる</button>
 </div>
 
 <div class="panel" id="cardPanel" role="dialog" aria-modal="true">
@@ -497,7 +496,7 @@ let S={
   cv:3, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
 };
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
-let planEdit=false, planTimer=null;
+let planEdit=false, planTimer=null, freeSticker=false, freeTimer=null;
 let held=null, hist=[], msgOverride=null, msgTimer=null, cntVal=0;
 
 const SEALS=[
@@ -766,7 +765,7 @@ function renderStrip(){
   el.appendChild(g);
 
   const m=document.createElement("span");m.className="msg";
-  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":"きょうの ひに はろう"):"シールを えらんでね"));
+  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":(freeSticker?"どの日にも はれます":"きょうの ひに はろう")):"シールを えらんでね"));
   el.appendChild(m);
 
   const f=document.createElement("div");f.className="foot";
@@ -781,7 +780,7 @@ function hold(id){
   held=(held===id)?null:id;
   const sh=document.getElementById("sheet");
   sh.classList.toggle("holding",!!held);
-  sh.classList.toggle("onlytoday",!!held&&!planEdit);
+  sh.classList.toggle("onlytoday",!!held&&!planEdit&&!freeSticker);
   renderStrip();
 }
 function hintStrip(){
@@ -797,7 +796,7 @@ function notToday(){
   msgTimer=setTimeout(()=>{msgOverride=null;renderStrip();},2400);
 }
 function place(d){
-  if(!planEdit&&!same(d,new Date())){notToday();return;}
+  if(!planEdit&&!freeSticker&&!same(d,new Date())){notToday();return;}
   const k=key(d);
   S.data[current]=S.data[current]||{};
   const r=S.data[current][k]||{};
@@ -929,66 +928,32 @@ document.getElementById("memo").addEventListener("input",e=>{
 });
 
 /* ===== よていモード（おうちの人がつかいます） ===== */
+function setFree(on){
+  freeSticker=on;
+  document.getElementById("freeBanner").classList.toggle("on",on);
+  if(on&&planEdit)setPlanEdit(false);
+  const sh=document.getElementById("sheet");
+  sh.classList.toggle("onlytoday",!!held&&!on&&!planEdit);
+  clearTimeout(freeTimer);
+  if(on)freeTimer=setTimeout(()=>{setFree(false);render();},3*60*1000);
+  renderStrip();
+}
 function setPlanEdit(on){
   planEdit=on;
+  if(on&&freeSticker)setFree(false);
   const b=document.getElementById("planBtn");
   b.setAttribute("aria-pressed",on);
   b.textContent=on?"✅ よてい おわり":"📝 よていを いれる";
   document.getElementById("planBanner").classList.toggle("on",on);
   const sh=document.getElementById("sheet");
-  sh.classList.toggle("onlytoday",!!held&&!on);
+  sh.classList.toggle("onlytoday",!!held&&!on&&!freeSticker);
   clearTimeout(planTimer);
   if(on)planTimer=setTimeout(()=>{setPlanEdit(false);render();},3*60*1000);
   renderStrip();
 }
 
 /* ===== せってい ===== */
-function openCfg(){
-  const box=document.getElementById("cfgFields");box.innerHTML="";
-  S.kids.forEach((k,i)=>{
-    const w=document.createElement("div");w.style.marginBottom="14px";
-    w.innerHTML=`<div class="field"><label>なまえ</label><input type="text" id="n${i}" value="${esc(k.name)}" maxlength="8"></div>
-      <div class="field"><label>よみがな</label><input type="text" id="y${i}" value="${esc(k.yomi)}" maxlength="10"></div>
-      <div class="field"><label>いろ</label><input type="color" id="c${i}" value="${k.color}"></div>
-      <div class="field"><label>イラスト</label><span class="avpick" id="a${i}"></span></div>`;
-    box.appendChild(w);
-    const ap=w.querySelector("#a"+i);
-    AVLIST.forEach(([id,nm])=>{
-      const b=document.createElement("button");
-      b.type="button";b.title=nm;b.setAttribute("aria-label",nm);
-      b.setAttribute("aria-pressed",(k.av||"girl")===id);
-      b.innerHTML=AVATARS[id](k.color);
-      b.onclick=()=>{
-        S.kids.forEach((kk,j)=>{
-          const nEl=document.getElementById("n"+j);if(!nEl)return;
-          kk.name=nEl.value.trim()||kk.name;
-          kk.yomi=document.getElementById("y"+j).value.trim();
-          kk.color=document.getElementById("c"+j).value;
-        });
-        k.av=id;save();renderKids();openCfg();
-      };
-      ap.appendChild(b);
-    });
-  });
-  openPanel("cfg");
-}
-function saveCfgQuiet(){
-  S.kids.forEach((k,i)=>{
-    const n=document.getElementById("n"+i);if(!n)return;
-    k.name=n.value.trim()||k.name;
-    k.yomi=document.getElementById("y"+i).value.trim();
-    k.color=document.getElementById("c"+i).value;
-  });
-  save();renderKids();render();
-}
-function saveCfg(){
-  S.kids.forEach((k,i)=>{
-    k.name=document.getElementById("n"+i).value.trim()||k.name;
-    k.yomi=document.getElementById("y"+i).value.trim();
-    k.color=document.getElementById("c"+i).value;
-  });
-  save();renderKids();render();closePanel();
-}
+function openCfg(){openPanel("cfg");}
 function openCards(){
   const box=document.getElementById("cardList");box.innerHTML="";
   S.cards.forEach((c,i)=>{
@@ -1033,10 +998,12 @@ document.querySelectorAll("#modeBtns button").forEach(b=>{
     render();
   };
 });
-document.getElementById("cfgClose").onclick=saveCfg;
+document.getElementById("cfgClose").onclick=closePanel;
 document.getElementById("cardClose").onclick=()=>{S.cards=S.cards.filter(c=>c.e.trim()&&c.n.trim());save();closePanel();};
 document.getElementById("settings").onclick=openCfg;
-document.getElementById("toCards").onclick=()=>{saveCfgQuiet();openCards();};
+document.getElementById("toCards").onclick=()=>openCards();
+document.getElementById("toFree").onclick=()=>{closePanel();setFree(true);render();};
+document.getElementById("freeEnd").onclick=()=>{setFree(false);render();};
 document.getElementById("planBtn").onclick=()=>{setPlanEdit(!planEdit);render();};
 document.getElementById("qClose").onclick=closePanel;
 document.getElementById("freeAdd").onclick=addFreePlan;
@@ -1070,7 +1037,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
   if(S.cv!==3){S.cv=3;save();}
   S.kids.forEach((k,i)=>{S.data[k.id]=S.data[k.id]||{};if(!k.av)k.av=i===0?"girl":"boy";});
   current=S.kids[0].id;
-  renderKids();renderDows();render();setPlanEdit(false);
+  renderKids();renderDows();render();setPlanEdit(false);setFree(false);
 })();
 </script>
 </body>
