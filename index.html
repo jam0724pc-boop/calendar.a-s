@@ -32,12 +32,12 @@ button{font-family:inherit;color:inherit}
 .side{display:flex;flex-direction:column;gap:8px;min-width:0}
 .kids{display:flex;gap:8px}
 .kid{
-  flex:1;display:flex;align-items:center;gap:7px;padding:8px 8px;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:13px 6px 11px;
   border:2px solid #ded3bd;border-radius:15px;background:#f2ece1;transition:transform .12s,box-shadow .12s;
-  font-size:.98rem;font-weight:700;color:var(--ink-soft);cursor:pointer;
+  font-size:1.32rem;font-weight:700;color:var(--ink-soft);cursor:pointer;text-align:center;
 }
-.kid .yomi{display:block;font-size:.6rem;font-weight:500;letter-spacing:.06em;margin-top:1px}
-.kid .av{width:38px;height:38px;border-radius:50%;background:var(--paper);flex:none;overflow:hidden;border:2px solid var(--k);opacity:.55;filter:saturate(.4)}
+.kid .yomi{display:block;font-size:.74rem;font-weight:500;letter-spacing:.08em;margin-top:2px}
+.kid .av{width:78px;height:78px;border-radius:50%;background:var(--paper);flex:none;overflow:hidden;border:2px solid var(--k);opacity:.55;filter:saturate(.4)}
 .kid .av svg{display:block;width:100%;height:100%}
 .kid[aria-selected="true"]{background:#fff;color:var(--ink);border-color:var(--k);box-shadow:0 3px 0 var(--k),0 5px 14px rgba(120,100,70,.14)}
 .kid[aria-selected="true"] .av{opacity:1;filter:none;box-shadow:0 2px 5px rgba(80,60,40,.18)}
@@ -47,12 +47,12 @@ button{font-family:inherit;color:inherit}
 .avpick button[aria-pressed="true"]{border-color:var(--theme);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--theme)}
 .kid:focus-visible,.cell:focus-visible,.card:focus-visible{outline:3px solid #333;outline-offset:2px}
 
-.card-box{background:#fff;border:1.5px solid #ded3bd;border-radius:14px;padding:9px 11px 10px;
+.card-box{background:#fff;border:1.5px solid #ded3bd;border-radius:16px;padding:15px 12px 16px;
   box-shadow:0 3px 10px rgba(120,100,70,.09)}
 .card-box.now{border-color:var(--tape-edge);background:linear-gradient(#fff,#fff) padding-box}
 .lbl{font-size:.62rem;font-weight:700;color:var(--ink-soft);letter-spacing:.14em;margin-bottom:3px}
-.dline{display:flex;align-items:center;gap:9px}
-.dline .ic{font-size:1.5rem;line-height:1}
+.dline{display:flex;align-items:center;gap:10px}
+.dline .ic{font-size:2.7rem;line-height:1;flex:none}
 .dline .d{font-size:1.3rem;font-weight:700}
 .dline .d small{display:block;font-size:.78rem;color:var(--ink-soft);font-weight:500}
 .plans{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
@@ -99,7 +99,8 @@ button{font-family:inherit;color:inherit}
 .modebtns{display:flex;gap:0;border:2px solid var(--line);border-radius:23px;overflow:hidden;background:var(--paper)}
 .modebtns button{border:none;background:none;height:42px;width:88px;padding:0;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:0;text-align:center}
 .modebtns button[aria-pressed="true"]{background:var(--green);color:#fff}
-.dline .d{font-size:1.02rem;font-weight:700;line-height:1.3}
+.dline .d{font-size:1.5rem;font-weight:900;line-height:1.2;letter-spacing:-.01em}
+.dline .d .w{display:block;font-size:1.12rem;font-weight:700;margin-top:3px;color:#5c5545}
 .dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
 
 /* 3日ひょうじ */
@@ -337,7 +338,7 @@ button{font-family:inherit;color:inherit}
     <div class="kids" id="kids" role="tablist"></div>
 
     <div class="card-box now">
-      <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d" id="tDate">—</span></div>
+      <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d"><span id="tDate">—</span><span class="w" id="tDow"></span></span></div>
     </div>
 
     <div class="strip" id="strip"></div>
@@ -623,7 +624,8 @@ function planHTML(d){
 function renderSide(){
   const t=new Date(),w=t.getDay();
   document.getElementById("tIcon").textContent=DOW[w].ic;
-  document.getElementById("tDate").childNodes[0].nodeValue=`${t.getMonth()+1}がつ ${t.getDate()}にち ${DOW[w].nm}`;
+  document.getElementById("tDate").textContent=`${t.getMonth()+1}がつ ${t.getDate()}にち`;
+  document.getElementById("tDow").textContent=DOW[w].nm;
 
 
 }
