@@ -173,6 +173,17 @@ button{font-family:inherit;color:inherit}
   box-shadow:inset 0 0 0 4px rgba(238,110,150,.55),inset 0 2px 6px rgba(255,255,255,.45)}
 .cell.today::after{content:"";position:absolute;left:0;right:0;top:0;height:4px;z-index:4;
   background:repeating-linear-gradient(90deg,rgba(255,255,255,.5) 0 3px,rgba(255,255,255,0) 3px 7px)}
+.cell .mk{position:absolute;left:50%;top:56%;z-index:2;pointer-events:none;width:36%;max-width:60px;aspect-ratio:1;
+  transform:translate(-50%,-50%) rotate(var(--mrot,0deg))}
+.mk svg{width:100%;height:100%;display:block}
+.week .cell .mk{top:54%;width:44%;max-width:92px}
+.three .cell .mk{top:58%;width:32%;max-width:130px}
+.strip .slabel{font-size:.66rem;font-weight:700;color:#8a8170;letter-spacing:.1em;text-align:center;margin-top:2px}
+.strip .s.mark{background:#fff;box-shadow:inset 0 0 0 2px #e6dcc8,0 1px 2px rgba(90,70,45,.18);
+  display:grid;place-items:center;font-size:1.7rem;font-weight:900;color:var(--sc);line-height:1}
+.strip .s.mark[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #e6dcc8,0 7px 11px rgba(90,70,45,.26),0 0 0 3px #fff,0 0 0 6px var(--ink)}
+.pick .sw.mk2{background:#fff;box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;
+  font-size:1.5rem;font-weight:900;color:var(--sc)}
 .cell .ill{position:absolute;inset:8%;opacity:.97}
 .cell .ill.sub{inset:16%}
 .cell .ill svg{width:100%;height:100%;display:block}
@@ -494,6 +505,8 @@ const SEALS=[
   {id:"green",nm:"みどり",c:"#3fa86e"},{id:"lightblue",nm:"みずいろ",c:"#6ec6e8"},
   {id:"blue",nm:"あお",c:"#2f6fc0"},{id:"purple",nm:"むらさき",c:"#9b6fc0"}
 ];
+const MARKS=[{id:"maru",nm:"はなまる",c:"#d94437",g:"◎"},{id:"star",nm:"ほし",c:"#e0a92e",g:"★"},{id:"heart",nm:"ハート",c:"#e0578f",g:"♥"}];
+const markOf=id=>MARKS.find(x=>x.id===id);
 const OLDSEAL={star:"yellow",heart:"pink",flower:"pink",maru:"red"};
 const sealOf=id=>SEALS.find(s=>s.id===id);
 const cardOf=id=>S.cards.find(c=>c.id===id);
@@ -626,10 +639,35 @@ function stHTML(d,sl){
   const rot=((d.getDate()*37)%9)-4;   // 日ごとに すこし かたむける
   return `<span class="st" style="--sc:${sl.c};--rot:${rot}deg"><i class="${justPlaced===key(d)?"new":""}"></i></span>`;
 }
+const STAR="M50 8 61 37 92 38 67 57 76 88 50 70 24 88 33 57 8 38 39 37Z";
+const HEART="M50 88C22 68 10 52 10 37c0-12 9-21 21-21 8 0 14 4 19 10 5-6 11-10 19-10 12 0 21 9 21 21 0 15-12 31-40 51z";
+function markSVG(id){
+  const mk=markOf(id);if(!mk)return"";
+  if(id==="maru"){
+    return `<svg viewBox="0 0 100 100"><g fill="none" stroke-linecap="round">
+      <circle cx="50" cy="50" r="35" stroke="rgba(80,60,40,.22)" stroke-width="25"/>
+      <circle cx="50" cy="50" r="17" stroke="rgba(80,60,40,.22)" stroke-width="25"/>
+      <circle cx="50" cy="50" r="35" stroke="#fffdf8" stroke-width="21"/>
+      <circle cx="50" cy="50" r="17" stroke="#fffdf8" stroke-width="21"/>
+      <circle cx="50" cy="50" r="35" stroke="${mk.c}" stroke-width="11"/>
+      <circle cx="50" cy="50" r="17" stroke="${mk.c}" stroke-width="11"/></g></svg>`;
+  }
+  const d=(id==="star")?STAR:HEART;
+  return `<svg viewBox="0 0 100 100">
+    <path d="${d}" fill="#fffdf8" stroke="rgba(80,60,40,.22)" stroke-width="20" stroke-linejoin="round"/>
+    <path d="${d}" fill="#fffdf8" stroke="#fffdf8" stroke-width="15" stroke-linejoin="round"/>
+    <path d="${d}" fill="${mk.c}" stroke="rgba(80,60,40,.3)" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
+}
+function mkHTML(d,id){
+  if(!markOf(id))return"";
+  const rot=((d.getDate()*23)%11)-5;
+  return `<span class="mk" style="--mrot:${rot}deg">${markSVG(id)}</span>`;
+}
 function cellHTML(d,hol,evt){
   const r=rec(d),wk=mode==="week";
   let s=`<span class="fg">${YOMI[d.getDate()]}</span><span class="num">${d.getDate()}</span>`;
   if(r.s){const sl=sealOf(r.s);if(sl)s+=stHTML(d,sl);}
+  if(r.m)s+=mkHTML(d,r.m);
   if(justPlaced===key(d))s+=`<span class="glow"></span>`;
   const p=r.p||[];
   let bot="";
@@ -655,6 +693,7 @@ function cellHTML3(d,hol,tag){
       return c?`<span class="plan-chip"><span class="e">${c.e}</span>${esc(c.n)}</span>`:"";}).join("")}</span>`;
   }
   if(r.s){const sl=sealOf(r.s);if(sl)s+=stHTML(d,sl);}
+  if(r.m)s+=mkHTML(d,r.m);
   if(justPlaced===key(d))s+=`<span class="glow"></span>`;
   if(r.memo)s+=`<span class="memo">${esc(r.memo)}</span>`;
   return s;
@@ -729,7 +768,7 @@ function render(){
   // こんげつの まいすう
   let cnt=0;const y2=view.getFullYear(),m2=view.getMonth();
   Object.entries(S.data[current]||{}).forEach(([k,v])=>{
-    const [a,b]=k.split("-");if(+a===y2&&+b===m2+1&&v.s)cnt++;
+    const [a,b]=k.split("-");if(+a===y2&&+b===m2+1){if(v.s)cnt++;if(v.m)cnt++;}
   });
   cntVal=cnt;
   justPlaced=null;
@@ -753,8 +792,19 @@ function renderStrip(){
   e.onclick=()=>hold("erase");g.appendChild(e);
   el.appendChild(g);
 
+  const lb=document.createElement("div");lb.className="slabel";lb.textContent="よるの はなまる";
+  el.appendChild(lb);
+  const g2=document.createElement("div");g2.className="sgrid";
+  MARKS.forEach(mk=>{
+    const b=document.createElement("button");
+    b.className="s mark";b.style.setProperty("--sc",mk.c);b.textContent=mk.g;
+    b.setAttribute("aria-pressed",held==="m_"+mk.id);b.setAttribute("aria-label",mk.nm);b.title=mk.nm;
+    b.onclick=()=>hold("m_"+mk.id);g2.appendChild(b);
+  });
+  el.appendChild(g2);
+
   const m=document.createElement("span");m.className="msg";
-  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":(freeSticker?"どの日にも はれます":"きょうの ひに はろう")):"シールを えらんでね"));
+  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":(freeSticker?"どの日にも つけられます":(held.startsWith("m_")?"きょうの ひに つけよう":"きょうの ひに はろう"))):"シールを えらんでね"));
   el.appendChild(m);
 
   const f=document.createElement("div");f.className="foot";
@@ -789,15 +839,19 @@ function place(d){
   const k=key(d);
   S.data[current]=S.data[current]||{};
   const r=S.data[current][k]||{};
-  const prev=r.s||null;
+  const prevS=r.s||null, prevM=r.m||null;
   if(held==="erase"){
-    if(!prev){hintStrip();return;}
-    delete r.s;
+    if(!prevS&&!prevM){hintStrip();return;}
+    delete r.s;delete r.m;
+  }else if(held.startsWith("m_")){
+    const id=held.slice(2);
+    if(prevM===id)return;
+    r.m=id;justPlaced=k;
   }else{
-    if(prev===held)return;
+    if(prevS===held)return;
     r.s=held;justPlaced=k;
   }
-  hist.push({k:current,d:k,prev});if(hist.length>30)hist.shift();
+  hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
   if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
   save();render();
 }
@@ -805,7 +859,8 @@ function undo(){
   const h=hist.pop();if(!h)return;
   const days=S.data[h.k]=S.data[h.k]||{};
   const r=days[h.d]||{};
-  if(h.prev)r.s=h.prev;else delete r.s;
+  if(h.prevS)r.s=h.prevS;else delete r.s;
+  if(h.prevM)r.m=h.prevM;else delete r.m;
   if(Object.keys(r).length)days[h.d]=r;else delete days[h.d];
   if(current!==h.k){current=h.k;renderKids();}
   const [yy,mm]=h.d.split("-");view=new Date(+yy,+mm-1,1);
@@ -830,10 +885,20 @@ function setSealAt(id){
   const k=key(picking);
   S.data[current]=S.data[current]||{};
   const r=S.data[current][k]||{};
-  const prev=r.s||null;
-  if(id&&prev!==id){r.s=id;justPlaced=k;}
-  else delete r.s;
-  hist.push({k:current,d:k,prev});if(hist.length>30)hist.shift();
+  const prevS=r.s||null, prevM=r.m||null;
+  if(id&&prevS!==id){r.s=id;justPlaced=k;}
+  else{delete r.s;if(!id)delete r.m;}
+  hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
+  if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
+  save();drawPlans();render();
+}
+function setMarkAt(id){
+  const k=key(picking);
+  S.data[current]=S.data[current]||{};
+  const r=S.data[current][k]||{};
+  const prevS=r.s||null, prevM=r.m||null;
+  if(id&&prevM!==id){r.m=id;justPlaced=k;}else delete r.m;
+  hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
   if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
   save();drawPlans();render();
 }
@@ -846,6 +911,12 @@ function drawPlans(){
     b.setAttribute("aria-pressed",rs===sl.id);
     b.innerHTML=`<span class="sw" style="--sc:${sl.c}"></span><span class="nm">${sl.nm}</span>`;
     b.onclick=()=>setSealAt(sl.id);qs.appendChild(b);
+  });
+  MARKS.forEach(mk=>{
+    const b=document.createElement("button");b.className="pick";
+    b.setAttribute("aria-pressed",rec(picking).m===mk.id);
+    b.innerHTML=`<span class="sw mk2" style="--sc:${mk.c}">${mk.g}</span><span class="nm">${mk.nm}</span>`;
+    b.onclick=()=>setMarkAt(mk.id);qs.appendChild(b);
   });
   const e=document.createElement("button");e.className="pick erase";
   e.innerHTML=`<span class="sw">✕</span><span class="nm">けす</span>`;
@@ -900,7 +971,7 @@ function touch(){
 }
 function tidy(){
   const k=key(picking),r=S.data[current][k];
-  if(r&&!r.s&&!(r.p&&r.p.length)&&!r.memo)delete S.data[current][k];
+  if(r&&!r.s&&!r.m&&!(r.p&&r.p.length)&&!r.memo)delete S.data[current][k];
 }
 function togglePlan(id){
   const r=touch();r.p=r.p||[];
