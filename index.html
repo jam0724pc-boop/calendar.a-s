@@ -498,6 +498,9 @@ let S={
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
 let planEdit=false, planTimer=null, freeSticker=false, freeTimer=null;
 let held=null, hist=[], msgOverride=null, msgTimer=null, cntVal=0;
+const NIGHT_FROM=15;                      // この時こくから はなまるが でます
+let wasNight=null;
+const isNight=()=>new Date().getHours()>=NIGHT_FROM||planEdit||freeSticker;
 
 const SEALS=[
   {id:"red",nm:"あか",c:"#e03b3b"},{id:"pink",nm:"ピンク",c:"#ee7ba8"},
@@ -792,6 +795,7 @@ function renderStrip(){
   e.onclick=()=>hold("erase");g.appendChild(e);
   el.appendChild(g);
 
+  if(isNight()){
   const lb=document.createElement("div");lb.className="slabel";lb.textContent="よるの はなまる";
   el.appendChild(lb);
   const g2=document.createElement("div");g2.className="sgrid";
@@ -802,6 +806,7 @@ function renderStrip(){
     b.onclick=()=>hold("m_"+mk.id);g2.appendChild(b);
   });
   el.appendChild(g2);
+  }else if(held&&held.startsWith("m_")){held=null;}
 
   const m=document.createElement("span");m.className="msg";
   m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":(freeSticker?"どの日にも つけられます":(held.startsWith("m_")?"きょうの ひに つけよう":"きょうの ひに はろう"))):"シールを えらんでね"));
@@ -1098,6 +1103,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
   S.kids.forEach((k,i)=>{S.data[k.id]=S.data[k.id]||{};if(!k.av)k.av=i===0?"girl":"boy";});
   current=S.kids[0].id;
   renderKids();renderDows();render();setPlanEdit(false);setFree(false);
+  wasNight=isNight();
+  setInterval(()=>{const n=isNight();if(n!==wasNight){wasNight=n;renderStrip();}},60000);
 })();
 </script>
 </body>
