@@ -176,14 +176,40 @@ button{font-family:inherit;color:inherit}
 .cell .mk{position:absolute;left:50%;top:56%;z-index:2;pointer-events:none;width:36%;max-width:60px;aspect-ratio:1;
   transform:translate(-50%,-50%) rotate(var(--mrot,0deg))}
 .mk svg{width:100%;height:100%;display:block}
+@keyframes mkpop{
+  0%{transform:translate(-50%,-50%) rotate(var(--mrot,0deg)) scale(.15)}
+  45%{transform:translate(-50%,-50%) rotate(calc(var(--mrot,0deg) + 14deg)) scale(1.4)}
+  70%{transform:translate(-50%,-50%) rotate(var(--mrot,0deg)) scale(.92)}
+  85%{transform:translate(-50%,-50%) rotate(var(--mrot,0deg)) scale(1.08)}
+  100%{transform:translate(-50%,-50%) rotate(var(--mrot,0deg)) scale(1)}}
+.cell .mk.new{animation:mkpop .62s cubic-bezier(.34,1.5,.5,1)}
+.cell .spark{position:absolute;left:50%;top:56%;width:0;height:0;z-index:6;pointer-events:none}
+.cell .spark i{position:absolute;left:0;top:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0 26%,#ffd84d 27% 62%,rgba(255,216,77,0) 63%);
+  animation:sprk .8s cubic-bezier(.2,.75,.3,1) forwards}
+@keyframes sprk{
+  0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.2)}
+  18%{opacity:1;transform:rotate(var(--a)) translateY(-12px) scale(1.15)}
+  100%{opacity:0;transform:rotate(var(--a)) translateY(calc(-58px * var(--dd))) scale(.35)}}
+.cell .spark::after{content:"";position:absolute;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;
+  border-radius:50%;border:4px solid #ffdf8a;animation:sring .7s ease-out forwards}
+@keyframes sring{0%{transform:scale(.3);opacity:.95}100%{transform:scale(6.5);opacity:0}}
+.week .cell .spark i,.three .cell .spark i{width:18px;height:18px;margin:-9px 0 0 -9px}
+.week .cell .spark::after,.three .cell .spark::after{width:26px;height:26px;margin:-13px 0 0 -13px}
+@keyframes sprkbig{
+  0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.2)}
+  18%{opacity:1;transform:rotate(var(--a)) translateY(-18px) scale(1.2)}
+  100%{opacity:0;transform:rotate(var(--a)) translateY(calc(-96px * var(--dd))) scale(.4)}}
+.week .cell .spark i,.three .cell .spark i{animation-name:sprkbig}
 .week .cell .mk{top:54%;width:44%;max-width:92px}
 .three .cell .mk{top:58%;width:32%;max-width:130px}
 .strip .slabel{font-size:.66rem;font-weight:700;color:#8a8170;letter-spacing:.1em;text-align:center;margin-top:2px}
 .strip .s.mark{background:#fff;box-shadow:inset 0 0 0 2px #e6dcc8,0 1px 2px rgba(90,70,45,.18);
-  display:grid;place-items:center;font-size:1.7rem;font-weight:900;color:var(--sc);line-height:1}
+  display:grid;place-items:center;padding:5px}
+.strip .s.mark svg{width:100%;height:100%;display:block}
 .strip .s.mark[aria-pressed="true"]{box-shadow:inset 0 0 0 2px #e6dcc8,0 7px 11px rgba(90,70,45,.26),0 0 0 3px #fff,0 0 0 6px var(--ink)}
-.pick .sw.mk2{background:#fff;box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;
-  font-size:1.5rem;font-weight:900;color:var(--sc)}
+.pick .sw.mk2{background:#fff;box-shadow:inset 0 0 0 2px var(--line);display:grid;place-items:center;padding:3px}
+.pick .sw.mk2 svg{width:100%;height:100%;display:block}
 .cell .ill{position:absolute;inset:8%;opacity:.97}
 .cell .ill.sub{inset:16%}
 .cell .ill svg{width:100%;height:100%;display:block}
@@ -268,6 +294,10 @@ button{font-family:inherit;color:inherit}
 .strip{display:flex;flex-direction:column;gap:9px;padding:11px 10px 12px;border-radius:14px;background:#f7f1e4;
   box-shadow:0 0 0 1.5px #ded3bd inset,0 0 0 5px #fdfbf5 inset,0 2px 8px rgba(120,100,70,.10)}
 .sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;justify-items:center}
+.sgrid.one{grid-template-columns:repeat(2,1fr);gap:12px}
+.sgrid.one .s{width:72px;height:72px}
+.sgrid.one .s.mark{font-size:0;padding:6px}
+.sgrid.one .s.mark svg{width:100%;height:100%;display:block}
 .strip .s{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;padding:0;background:var(--sc);
   box-shadow:inset -2px -3px 6px rgba(0,0,0,.10),0 1px 2px rgba(90,70,45,.18);
   transition:transform .14s cubic-bezier(.34,1.4,.5,1),box-shadow .14s}
@@ -497,10 +527,10 @@ let S={
 };
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
 let planEdit=false, planTimer=null, freeSticker=false, freeTimer=null;
-let held=null, hist=[], msgOverride=null, msgTimer=null, cntVal=0;
+let held=null, hist=[], msgOverride=null, msgTimer=null, cntVal=0, justSpark=false;
 const NIGHT_FROM=15;                      // この時こくから はなまるが でます
 let wasNight=null;
-const isNight=()=>new Date().getHours()>=NIGHT_FROM||planEdit||freeSticker;
+const isNight=()=>new Date().getHours()>=NIGHT_FROM;
 
 const SEALS=[
   {id:"red",nm:"あか",c:"#e03b3b"},{id:"pink",nm:"ピンク",c:"#ee7ba8"},
@@ -508,8 +538,8 @@ const SEALS=[
   {id:"green",nm:"みどり",c:"#3fa86e"},{id:"lightblue",nm:"みずいろ",c:"#6ec6e8"},
   {id:"blue",nm:"あお",c:"#2f6fc0"},{id:"purple",nm:"むらさき",c:"#9b6fc0"}
 ];
-const MARKS=[{id:"maru",nm:"はなまる",c:"#d94437",g:"◎"},{id:"star",nm:"ほし",c:"#e0a92e",g:"★"},{id:"heart",nm:"ハート",c:"#e0578f",g:"♥"}];
-const markOf=id=>MARKS.find(x=>x.id===id);
+const MARKS=[{id:"star",nm:"スター",c:"#f0b429",g:"★"}];
+const markOf=id=>MARKS.find(x=>x.id===id)||MARKS[0];
 const OLDSEAL={star:"yellow",heart:"pink",flower:"pink",maru:"red"};
 const sealOf=id=>SEALS.find(s=>s.id===id);
 const cardOf=id=>S.cards.find(c=>c.id===id);
@@ -642,29 +672,38 @@ function stHTML(d,sl){
   const rot=((d.getDate()*37)%9)-4;   // 日ごとに すこし かたむける
   return `<span class="st" style="--sc:${sl.c};--rot:${rot}deg"><i class="${justPlaced===key(d)?"new":""}"></i></span>`;
 }
-const STAR="M50 8 61 37 92 38 67 57 76 88 50 70 24 88 33 57 8 38 39 37Z";
-const HEART="M50 88C22 68 10 52 10 37c0-12 9-21 21-21 8 0 14 4 19 10 5-6 11-10 19-10 12 0 21 9 21 21 0 15-12 31-40 51z";
+const STAR="M50 6c2.2 0 4 1.2 5 3.2l9.4 19.6 21.4 3c2.2.3 4 1.8 4.7 3.9.7 2.1.1 4.4-1.5 5.9L73.5 56.9l3.8 21.6c.4 2.2-.5 4.4-2.3 5.7-1.8 1.3-4.2 1.4-6.1.4L50 74.4 31.1 84.6c-1.9 1-4.3.9-6.1-.4-1.8-1.3-2.7-3.5-2.3-5.7l3.8-21.6L11 41.6c-1.6-1.5-2.2-3.8-1.5-5.9.7-2.1 2.5-3.6 4.7-3.9l21.4-3L45 9.2C46 7.2 47.8 6 50 6z";
 function markSVG(id){
-  const mk=markOf(id);if(!mk)return"";
-  if(id==="maru"){
-    return `<svg viewBox="0 0 100 100"><g fill="none" stroke-linecap="round">
-      <circle cx="50" cy="50" r="35" stroke="rgba(80,60,40,.22)" stroke-width="25"/>
-      <circle cx="50" cy="50" r="17" stroke="rgba(80,60,40,.22)" stroke-width="25"/>
-      <circle cx="50" cy="50" r="35" stroke="#fffdf8" stroke-width="21"/>
-      <circle cx="50" cy="50" r="17" stroke="#fffdf8" stroke-width="21"/>
-      <circle cx="50" cy="50" r="35" stroke="${mk.c}" stroke-width="11"/>
-      <circle cx="50" cy="50" r="17" stroke="${mk.c}" stroke-width="11"/></g></svg>`;
-  }
-  const d=(id==="star")?STAR:HEART;
+  const mk=markOf(id);
   return `<svg viewBox="0 0 100 100">
-    <path d="${d}" fill="#fffdf8" stroke="rgba(80,60,40,.22)" stroke-width="20" stroke-linejoin="round"/>
-    <path d="${d}" fill="#fffdf8" stroke="#fffdf8" stroke-width="15" stroke-linejoin="round"/>
-    <path d="${d}" fill="${mk.c}" stroke="rgba(80,60,40,.3)" stroke-width="2.5" stroke-linejoin="round"/></svg>`;
+    <path d="${STAR}" fill="#fffdf8" stroke="rgba(80,60,40,.25)" stroke-width="15" stroke-linejoin="round"/>
+    <path d="${STAR}" fill="#fffdf8" stroke="#fffdf8" stroke-width="11" stroke-linejoin="round"/>
+    <path d="${STAR}" fill="${mk.c}" stroke="#d99c1f" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M50 6c2.2 0 4 1.2 5 3.2l9.4 19.6 21.4 3c2.2.3 4 1.8 4.7 3.9-3-2-8-2.4-14-1.4-9 1.5-16 6-20 12-3-9-6-20-6.5-40.3z" fill="#f8d05e" opacity=".85"/>
+    <ellipse cx="38" cy="46" rx="5.2" ry="7" fill="#4a3a30"/>
+    <ellipse cx="62" cy="46" rx="5.2" ry="7" fill="#4a3a30"/>
+    <circle cx="36.2" cy="43.4" r="1.9" fill="#fffdf8"/>
+    <circle cx="60.2" cy="43.4" r="1.9" fill="#fffdf8"/>
+    <ellipse cx="29" cy="56" rx="5" ry="3.4" fill="#ef8b8b" opacity=".75"/>
+    <ellipse cx="71" cy="56" rx="5" ry="3.4" fill="#ef8b8b" opacity=".75"/>
+    <path d="M40 58c3.4 4.6 16.6 4.6 20 0-1.6 7-6.4 10-10 10s-8.4-3-10-10z" fill="#8a4a3a"/>
+    <path d="M43.4 65.6c4-1.6 9.2-1.6 13.2 0-1.8 2.2-4.2 3.2-6.6 3.2s-4.8-1-6.6-3.2z" fill="#f4a0a8"/>
+  </svg>`;
 }
 function mkHTML(d,id){
-  if(!markOf(id))return"";
   const rot=((d.getDate()*23)%11)-5;
-  return `<span class="mk" style="--mrot:${rot}deg">${markSVG(id)}</span>`;
+  const isNew=(justPlaced===key(d)&&justSpark);
+  let out=`<span class="mk${isNew?" new":""}" style="--mrot:${rot}deg">${markSVG(id)}</span>`;
+  if(isNew){
+    let sp="";
+    for(let i=0;i<14;i++){
+      const a=i*(360/14)+(i%2?8:0);
+      const dd=(i%2?1:.72);
+      sp+=`<i style="--a:${a}deg;--dd:${dd}"></i>`;
+    }
+    out+=`<span class="spark">${sp}</span>`;
+  }
+  return out;
 }
 function cellHTML(d,hol,evt){
   const r=rec(d),wk=mode==="week";
@@ -774,7 +813,7 @@ function render(){
     const [a,b]=k.split("-");if(+a===y2&&+b===m2+1){if(v.s)cnt++;if(v.m)cnt++;}
   });
   cntVal=cnt;
-  justPlaced=null;
+  justPlaced=null;justSpark=false;
   renderStrip();
   renderSide();
 }
@@ -782,34 +821,51 @@ function render(){
 /* ===== シール台紙（もって → 日をタップ） ===== */
 function renderStrip(){
   const el=document.getElementById("strip");el.innerHTML="";
-  const g=document.createElement("div");g.className="sgrid";
-  SEALS.forEach(sl=>{
-    const b=document.createElement("button");
-    b.className="s";b.style.setProperty("--sc",sl.c);
-    b.setAttribute("aria-pressed",held===sl.id);b.setAttribute("aria-label",sl.nm);b.title=sl.nm;
-    b.onclick=()=>hold(sl.id);g.appendChild(b);
-  });
-  const e=document.createElement("button");
-  e.className="s er";e.textContent="✕";e.title="けす";e.setAttribute("aria-label","けす");
-  e.setAttribute("aria-pressed",held==="erase");
-  e.onclick=()=>hold("erase");g.appendChild(e);
-  el.appendChild(g);
-
-  if(isNight()){
-  const lb=document.createElement("div");lb.className="slabel";lb.textContent="よるの はなまる";
-  el.appendChild(lb);
-  const g2=document.createElement("div");g2.className="sgrid";
-  MARKS.forEach(mk=>{
-    const b=document.createElement("button");
-    b.className="s mark";b.style.setProperty("--sc",mk.c);b.textContent=mk.g;
-    b.setAttribute("aria-pressed",held==="m_"+mk.id);b.setAttribute("aria-label",mk.nm);b.title=mk.nm;
-    b.onclick=()=>hold("m_"+mk.id);g2.appendChild(b);
-  });
-  el.appendChild(g2);
-  }else if(held&&held.startsWith("m_")){held=null;}
-
+  const adultMode=planEdit||freeSticker;
+  const night=new Date().getHours()>=NIGHT_FROM;
+  const showSeals=adultMode||!night;
+  const showMarks=adultMode||night;
+  if(held&&held!=="erase"){
+    if(held.startsWith("m_")&&!showMarks)held=null;
+    if(!held||(!held.startsWith("m_")&&!showSeals&&held!=="erase"))held=null;
+  }
+  const eraser=()=>{
+    const e=document.createElement("button");
+    e.className="s er";e.textContent="✕";e.title="けす";e.setAttribute("aria-label","けす");
+    e.setAttribute("aria-pressed",held==="erase");
+    e.onclick=()=>hold("erase");return e;
+  };
+  if(showSeals){
+    const lb=document.createElement("div");lb.className="slabel";lb.textContent="あさの シール";
+    el.appendChild(lb);
+    const g=document.createElement("div");g.className="sgrid";
+    SEALS.forEach(sl=>{
+      const b=document.createElement("button");
+      b.className="s";b.style.setProperty("--sc",sl.c);
+      b.setAttribute("aria-pressed",held===sl.id);b.setAttribute("aria-label",sl.nm);b.title=sl.nm;
+      b.onclick=()=>hold(sl.id);g.appendChild(b);
+    });
+    g.appendChild(eraser());
+    el.appendChild(g);
+  }
+  if(showMarks){
+    const lb=document.createElement("div");lb.className="slabel";lb.textContent="よるの はなまる";
+    el.appendChild(lb);
+    const g2=document.createElement("div");g2.className="sgrid";
+    MARKS.forEach(mk=>{
+      const b=document.createElement("button");
+      b.className="s mark";b.style.setProperty("--sc",mk.c);b.innerHTML=markSVG(mk.id);
+      b.setAttribute("aria-pressed",held==="m_"+mk.id);b.setAttribute("aria-label",mk.nm);b.title=mk.nm;
+      b.onclick=()=>hold("m_"+mk.id);g2.appendChild(b);
+    });
+    if(!showSeals){g2.classList.add("one");g2.appendChild(eraser());}
+    el.appendChild(g2);
+  }
   const m=document.createElement("span");m.className="msg";
-  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":(held?(held==="erase"?"けす日を えらんでね":(freeSticker?"どの日にも つけられます":(held.startsWith("m_")?"きょうの ひに つけよう":"きょうの ひに はろう"))):"シールを えらんでね"));
+  m.textContent=msgOverride||(planEdit?"よていを いれる日を えらんでね":
+    (held?(held==="erase"?"けす日を えらんでね":
+      (freeSticker?"どの日にも つけられます":(held.startsWith("m_")?"きょうの ひに つけよう":"きょうの ひに はろう")))
+     :(showSeals?"シールを えらんでね":"きょうも がんばったね⭐️")));
   el.appendChild(m);
 
   const f=document.createElement("div");f.className="foot";
@@ -851,10 +907,10 @@ function place(d){
   }else if(held.startsWith("m_")){
     const id=held.slice(2);
     if(prevM===id)return;
-    r.m=id;justPlaced=k;
+    r.m=id;justPlaced=k;justSpark=true;
   }else{
     if(prevS===held)return;
-    r.s=held;justPlaced=k;
+    r.s=held;justPlaced=k;justSpark=false;
   }
   hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
   if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
@@ -891,7 +947,7 @@ function setSealAt(id){
   S.data[current]=S.data[current]||{};
   const r=S.data[current][k]||{};
   const prevS=r.s||null, prevM=r.m||null;
-  if(id&&prevS!==id){r.s=id;justPlaced=k;}
+  if(id&&prevS!==id){r.s=id;justPlaced=k;justSpark=false;}
   else{delete r.s;if(!id)delete r.m;}
   hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
   if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
@@ -902,7 +958,7 @@ function setMarkAt(id){
   S.data[current]=S.data[current]||{};
   const r=S.data[current][k]||{};
   const prevS=r.s||null, prevM=r.m||null;
-  if(id&&prevM!==id){r.m=id;justPlaced=k;}else delete r.m;
+  if(id&&prevM!==id){r.m=id;justPlaced=k;justSpark=true;}else delete r.m;
   hist.push({k:current,d:k,prevS,prevM});if(hist.length>30)hist.shift();
   if(Object.keys(r).length)S.data[current][k]=r;else delete S.data[current][k];
   save();drawPlans();render();
@@ -920,7 +976,7 @@ function drawPlans(){
   MARKS.forEach(mk=>{
     const b=document.createElement("button");b.className="pick";
     b.setAttribute("aria-pressed",rec(picking).m===mk.id);
-    b.innerHTML=`<span class="sw mk2" style="--sc:${mk.c}">${mk.g}</span><span class="nm">${mk.nm}</span>`;
+    b.innerHTML=`<span class="sw mk2">${markSVG(mk.id)}</span><span class="nm">${mk.nm}</span>`;
     b.onclick=()=>setMarkAt(mk.id);qs.appendChild(b);
   });
   const e=document.createElement("button");e.className="pick erase";
@@ -1100,6 +1156,12 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
     }));
   }
   if(S.cv!==3){S.cv=3;save();}
+  // むかしの ◎ や ♥ は ぜんぶ スターに
+  let changed=false;
+  Object.values(S.data).forEach(days=>Object.values(days).forEach(r=>{
+    if(r.m&&r.m!=="star"){r.m="star";changed=true;}
+  }));
+  if(changed)save();
   S.kids.forEach((k,i)=>{S.data[k.id]=S.data[k.id]||{};if(!k.av)k.av=i===0?"girl":"boy";});
   current=S.kids[0].id;
   renderKids();renderDows();render();setPlanEdit(false);setFree(false);
