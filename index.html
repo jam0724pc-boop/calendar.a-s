@@ -43,12 +43,12 @@ button{font-family:inherit;color:inherit}
 .kid[aria-selected="true"] .av{opacity:1;filter:none;box-shadow:0 2px 5px rgba(80,60,40,.18)}
 .kid:focus-visible,.cell:focus-visible,.card:focus-visible{outline:3px solid #333;outline-offset:2px}
 
-.card-box{background:#fff;border:1.5px solid #ded3bd;border-radius:16px;padding:15px 12px 16px;
+.card-box{background:#fff;border:1.5px solid #ded3bd;border-radius:16px;padding:13px 10px 14px;overflow:hidden;
   box-shadow:0 3px 10px rgba(120,100,70,.09)}
 .card-box.now{border-color:var(--tape-edge);background:linear-gradient(#fff,#fff) padding-box}
 .lbl{font-size:.62rem;font-weight:700;color:var(--ink-soft);letter-spacing:.14em;margin-bottom:3px}
-.dline{display:flex;align-items:center;gap:10px}
-.dline .ic{font-size:2.7rem;line-height:1;flex:none}
+.dline{display:flex;align-items:center;gap:8px;min-width:0}
+.dline .ic{font-size:2.1rem;line-height:1;flex:none}
 .dline .d{font-size:1.3rem;font-weight:700}
 .dline .d small{display:block;font-size:.78rem;color:var(--ink-soft);font-weight:500}
 .plans{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
@@ -95,8 +95,8 @@ button{font-family:inherit;color:inherit}
 .modebtns{display:flex;gap:0;border:2px solid var(--line);border-radius:23px;overflow:hidden;background:var(--paper)}
 .modebtns button{border:none;background:none;height:42px;width:88px;padding:0;font-weight:700;font-size:.92rem;cursor:pointer;border-radius:0;min-width:0;text-align:center}
 .modebtns button[aria-pressed="true"]{background:var(--green);color:#fff}
-.dline .d{font-size:1.5rem;font-weight:900;line-height:1.2;letter-spacing:-.01em}
-.dline .d .w{display:block;font-size:1.12rem;font-weight:700;margin-top:3px;color:#5c5545}
+.dline .d{font-size:1.3rem;font-weight:900;line-height:1.25;letter-spacing:-.02em;white-space:nowrap;min-width:0}
+.dline .d .w{display:block;font-size:1.02rem;font-weight:700;margin-top:2px;color:#5c5545}
 .dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
 
 /* 3日ひょうじ */
@@ -232,6 +232,115 @@ button{font-family:inherit;color:inherit}
 .week .cell .memo{font-size:.8rem}
 .week .cell.today::before{box-shadow:inset 0 0 0 5px rgba(238,110,150,.55);border-radius:12px}
 .week .cell.today::after{border-radius:12px 12px 0 0}
+
+
+/* ===== ガチャ ===== */
+.tools .gachabtn{background:linear-gradient(#f6c75a,#eba62c);border-color:#d9911f;color:#4a3a30;font-size:.9rem}
+.tools .gachabtn:active{transform:translateY(1px)}
+.tools .dexbtn{font-size:.9rem}
+.tools .gachabtn.ready{animation:gready 1.9s ease-in-out infinite}
+.tools .gachabtn.ready::after{content:"";position:absolute;top:5px;right:7px;width:9px;height:9px;
+  border-radius:50%;background:#d9584e;box-shadow:0 0 0 2px #fff}
+.tools .gachabtn{position:relative}
+@keyframes gready{0%,100%{box-shadow:0 2px 6px rgba(120,100,70,.08)}
+  50%{box-shadow:0 2px 6px rgba(120,100,70,.08),0 0 0 4px rgba(240,180,41,.35)}}
+.tools .gachabtn.off{background:#f4eee2;border-color:#ded3bd;color:#a79c86}
+.gpanel{text-align:center}
+.gstage{position:relative;height:270px;display:grid;place-items:center;overflow:visible}
+.gmachine{width:176px;animation:gshake .62s ease-in-out 2}
+.rolling .gmachine{animation:gshake .62s ease-in-out 2,gaway .5s ease-in 2.15s both}
+@keyframes gaway{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.8)}}
+@keyframes gshake{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+.gcap{position:absolute;left:50%;top:50%;width:104px;height:104px;margin:-52px 0 0 -52px;z-index:2;
+  animation:gdrop 1s cubic-bezier(.3,.9,.4,1.3) 1.1s both}
+@keyframes gdrop{
+  0%{transform:translateY(-62px) scale(.45);opacity:0}
+  22%{opacity:1}
+  50%{transform:translateY(62px) scale(1)}
+  66%{transform:translateY(26px) scale(1)}
+  82%{transform:translateY(62px) scale(1.06,.92)}
+  92%{transform:translateY(44px) scale(1)}
+  100%{transform:translateY(52px) scale(1)}}
+.gcap .half{position:absolute;left:0;width:104px;height:52px;overflow:hidden}
+.gcap .top{top:0;animation:gtop .55s cubic-bezier(.3,.9,.4,1) 2.2s both}
+.gcap .bot{top:52px;animation:gbot .55s cubic-bezier(.3,.9,.4,1) 2.2s both}
+.gcap .half svg{position:absolute;left:0;width:104px;height:104px}
+.gcap .top svg{top:0}.gcap .bot svg{top:-52px}
+@keyframes gtop{0%{transform:translateY(52px);opacity:1}100%{transform:translate(-78px,-28px) rotate(-40deg);opacity:0}}
+@keyframes gbot{0%{transform:translateY(52px);opacity:1}100%{transform:translate(78px,120px) rotate(40deg);opacity:0}}
+.gchar{position:absolute;left:50%;top:50%;width:250px;height:250px;margin:-125px 0 0 -125px;z-index:3;
+  animation:gpop 1s cubic-bezier(.3,1.5,.45,1) 2.45s both}
+.gchar svg{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 16px rgba(140,110,50,.3))}
+@keyframes gpop{
+  0%{transform:scale(.1) rotate(-30deg);opacity:0}
+  35%{transform:scale(1.22) rotate(8deg);opacity:1}
+  55%{transform:scale(.95) rotate(-4deg)}
+  72%{transform:scale(1.05) rotate(2deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}}
+.gstage .gs{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);
+  margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:var(--c);
+  box-shadow:0 0 9px var(--c);animation:gsprk 1.3s cubic-bezier(.15,.7,.3,1) var(--t) forwards}
+.gstage .gs.sq{border-radius:3px}
+@keyframes gsprk{
+  0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.2)}
+  14%{opacity:1}
+  75%{opacity:1}
+  100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) rotate(var(--rot)) scale(.4)}}
+.gstage .gring{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;
+  border-radius:50%;border:6px solid #ffdf8a;animation:gringa 1s ease-out 2.4s forwards;opacity:0}
+@keyframes gringa{0%{transform:scale(.3);opacity:.95}100%{transform:scale(11);opacity:0}}
+.gresult{min-height:104px}
+@keyframes gfade{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+.gresult .gnm{font-size:1.7rem;font-weight:900;color:var(--ink)}
+.gresult .gbadge{display:inline-block;margin-left:8px;vertical-align:5px;border-radius:14px;
+  padding:3px 11px;font-size:.78rem;font-weight:700;background:#f4eee2;color:#8a8170}
+.gresult .gbadge.nw{background:linear-gradient(#f6c75a,#eba62c);color:#4a3a30}
+.gresult .gtip{margin-top:9px;font-size:1.05rem;font-weight:700;color:#5c5545;line-height:1.55}
+.gresult .grare{margin-top:8px;font-size:.82rem;font-weight:700;color:#c9963a;letter-spacing:.1em}
+.grow{display:flex;gap:10px;margin-top:16px}
+.gagain{flex:1;border:none;border-radius:14px;padding:14px;cursor:pointer;font-family:inherit;
+  font-weight:700;font-size:1.05rem;background:linear-gradient(#f6c75a,#eba62c);color:#4a3a30;
+  box-shadow:0 3px 0 #d0891c}
+.gagain:active{transform:translateY(2px);box-shadow:0 1px 0 #d0891c}
+.grow .gclose{flex:1;margin-top:0}
+.gstart{border:none;border-radius:16px;padding:16px 30px;cursor:pointer;font-family:inherit;
+  font-weight:900;font-size:1.25rem;background:linear-gradient(#f6c75a,#eba62c);color:#4a3a30;
+  box-shadow:0 4px 0 #d0891c;animation:gbeat 1.3s ease-in-out infinite}
+@keyframes gbeat{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+
+.gpanel h2{margin:0 0 4px;font-size:1.3rem}
+.gcount{margin-left:10px;font-size:.88rem;font-weight:700;color:#8a8170;
+  background:#f4eee2;border-radius:14px;padding:3px 11px;vertical-align:3px}
+.gmsg{display:grid;justify-items:center;gap:12px;font-size:3.2rem;line-height:1}
+.gmsg div{font-size:1.12rem;font-weight:700;color:#5c5545;line-height:1.7;text-align:center}
+.gmsg.done div{color:#c9963a}
+.gprog{margin-top:9px;font-size:.86rem;font-weight:700;color:#8a8170}
+.gagain:disabled{background:#f4eee2;color:#b7ad99;box-shadow:none;cursor:default}
+.dexhead{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:2px}
+.dexhead h2{margin:0;font-size:1.5rem;min-width:3.4em;text-align:center}
+.dexhead button{width:42px;height:42px;border-radius:21px;border:2px solid var(--line);
+  background:var(--paper);font-size:1rem;cursor:pointer;font-family:inherit}
+.dexhead button:disabled{opacity:.3;cursor:default}
+.dexgrid{max-height:44vh}
+
+/* ===== ずかん ===== */
+.dexgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:9px;
+  max-height:46vh;overflow:auto;padding:4px 2px}
+.dexcell{position:relative;border:2px solid var(--line);background:#fff;border-radius:14px;
+  padding:6px 3px 5px;display:grid;justify-items:center;gap:2px;cursor:pointer}
+.dexcell svg{width:52px;height:52px;display:block}
+.dexcell .dn{font-size:.66rem;font-weight:700;color:var(--ink-soft);line-height:1.2}
+.dexcell.got{border-color:#e0b478;background:#fffdf6}
+.dexcell.got.r3{border-color:#eba62c;box-shadow:0 0 0 2px #f9e3a0 inset}
+.dexcell .cnt{position:absolute;top:-6px;right:-4px;background:var(--green);color:#fff;
+  border-radius:11px;min-width:22px;padding:1px 5px;font-size:.66rem;font-weight:700}
+.dexcell.no svg{filter:grayscale(1) brightness(.4) opacity(.22)}
+.dexcell.no .dn{color:#c2b9a7}
+.dexcell.pick{border-color:var(--theme);box-shadow:0 0 0 2px var(--theme) inset}
+.dextip{margin-top:12px;min-height:44px;background:#f7f1e4;border-radius:12px;padding:11px 13px;
+  font-size:.95rem;font-weight:700;color:#5c5545;line-height:1.5;text-align:center}
+@media (max-width:899px){.gstage{height:238px}.gchar{width:200px;height:200px;margin:-100px 0 0 -100px}}
 
 /* ========== パネル ========== */
 .cheer{position:fixed;inset:0;z-index:80;pointer-events:none;display:none;overflow:hidden}
@@ -423,6 +532,11 @@ button{font-family:inherit;color:inherit}
     <div class="strip" id="strip"></div>
 
     <div class="tools">
+      <button id="gachaBtn" class="gachabtn">🎁 ガチャ</button>
+      <button id="dexBtn" class="dexbtn">📖 ずかん</button>
+    </div>
+
+    <div class="tools">
       <button id="planBtn" class="planbtn" aria-pressed="false">📝 よていを いれる</button>
     </div>
   </div>
@@ -455,6 +569,28 @@ button{font-family:inherit;color:inherit}
 
 <div class="cheer" id="cheer" aria-hidden="true"></div>
 <div class="ovl" id="ovl"></div>
+
+<div class="panel gpanel" id="gachaPanel" role="dialog" aria-modal="true">
+  <h2 id="gTitle"></h2>
+  <div class="gstage" id="gstage"></div>
+  <div class="gresult" id="gresult"></div>
+  <div class="grow">
+    <button class="gagain" id="gAgain">もう いちど</button>
+    <button class="close gclose" id="gClose">とじる</button>
+  </div>
+</div>
+
+<div class="panel" id="dexPanel" role="dialog" aria-modal="true">
+  <div class="dexhead">
+    <button id="dexPrev" aria-label="まえの つき">◀</button>
+    <h2 id="dexYM">10月</h2>
+    <button id="dexNext" aria-label="つぎの つき">▶</button>
+  </div>
+  <div class="sub" id="dexSub"></div>
+  <div class="dexgrid" id="dexGrid"></div>
+  <div class="dextip" id="dexTip"></div>
+  <button class="close" id="dexClose">とじる</button>
+</div>
 
 <div class="panel" id="planPanel" role="dialog" aria-modal="true">
   <h2 id="qTitle"></h2>
@@ -570,7 +706,7 @@ const avatarOf=k=>(AVATARS[k.av]||AVATARS.girl)(k.color);
 
 let S={
   kids:[{id:"k1",name:"明音",yomi:"あかね",color:"#e8566e",av:"girl"},{id:"k2",name:"颯真",yomi:"そうま",color:"#3f8fce",av:"boy"}],
-  sound:true, cv:3, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
+  sound:true, dex:{}, pull:{}, cv:4, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
 };
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
 let planEdit=false, planTimer=null, freeSticker=false, freeTimer=null;
@@ -651,6 +787,98 @@ function events(y,m){
   if(m===6)e[nthSun(y,6,3)]="ちちのひ";
   return e;
 }
+
+const MONTHCHARS={
+9:[
+{id:"s_tsuki",nm:"まんげつ",r:1,tip:"つきは まるくなったり ほそくなったり するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><circle cx="32" cy="30" r="20" fill="#f3c44e"/><circle cx="32" cy="30" r="20" fill="#f9e3a0" opacity=".45" stroke="none"/><circle cx="24" cy="23" r="4.4" fill="#e0a92e" opacity=".75" stroke="none"/><circle cx="38" cy="37" r="3.2" fill="#e0a92e" opacity=".65" stroke="none"/><circle cx="40" cy="22" r="2.3" fill="#e0a92e" opacity=".6" stroke="none"/><circle cx="26" cy="38" r="2" fill="#e0a92e" opacity=".5" stroke="none"/><path d="M8 48c-3 0-5-2-5-4.6 0-2.6 2-4.6 5-4.6.6-3 3.2-5 6.2-5 2.4 0 4.6 1.4 5.6 3.4 4 .4 7.2 3.4 7.2 6.6 0 2.4-2 4.2-5 4.2z" fill="#fffcf4" opacity=".9" stroke="none"/></svg>`},
+{id:"s_usagi",nm:"つきみうさぎ",r:1,tip:"うさぎは みみで あつさを にがすよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M26.2 24c-2.3-9.6-1.2-14.2 1.9-14.2s4.2 5.8 2.3 14.2z" fill="#fffcf4"/><path d="M34.4 23.5c-.4-9.4 1.5-13.6 4.4-12.3 2.9 1.3 1.5 7.1-.6 12.3z" fill="#fffcf4"/><path d="M28 22.3c-1-5.8-.6-8.6.5-8.6s1.5 3.6.8 8.6z" fill="#f4c4ca"/><path d="M36 21.9c.4-5.6 1.7-8.1 2.8-7.5s.2 4-1 7.3z" fill="#f4c4ca"/><ellipse cx="32" cy="46" rx="13.5" ry="11" fill="#fffcf4"/><ellipse cx="32" cy="48.5" rx="9" ry="8" fill="#f6edda"/><circle cx="32" cy="32" r="10.5" fill="#fffcf4"/><circle cx="28.4" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="29.1" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.6" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="36.3" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="24.6" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="39.4" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="32" cy="35.4" rx="1.6" ry="1.2" fill="#ee8fa6"/><path d="M32 37.5c-1 1.7-2.5 2.1-3.6 1.5M32 37.5c1 1.7 2.5 2.1 3.6 1.5" stroke="#8a5f38" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"s_susuki",nm:"すすき",r:1,tip:"すすきの ほは ふわふわ しているよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M18 60c-3-20-1-30 6-38" stroke="#c08f55" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M24 22c9-7 13.6-1.6 10.4 5-3.2 6.6-10 11.8-17 13.4.6-9.4 3.4-15.8 6.6-18.4z" fill="#e0b478"/><path d="M26 24c1.2 4.2 0 9-3.8 13.4M30 24.4c.2 4.4-2 8.6-5.4 12" stroke="#c08f55" stroke-width="1" fill="none" opacity=".7"/><path d="M36 60c-2-15 0-24 6-31" stroke="#c08f55" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M42 27c7.6-5.6 11.2-1.2 8.6 4.2-2.6 5.4-8 9.6-13.6 11 .2-7.8 2.2-12.8 5-15.2z" fill="#e0b478"/><path d="M52 60c-1-11 .6-18 4-23" stroke="#c08f55" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M56 33c6-4.4 8.8-1 6.8 3.4-2 4.4-6.2 7.6-10.6 8.8.2-6.2 1.6-10.2 3.8-12.2z" fill="#e0b478"/></svg>`},
+{id:"s_dango",nm:"おだんご",r:1,tip:"おつきみの ひに おそなえ するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="52" rx="22" ry="4" fill="#e6dcc8"/><ellipse cx="32" cy="49.6" rx="22" ry="4" fill="#f6edda"/><circle cx="20.8" cy="41" r="6.4" fill="#fffcf4"/><circle cx="32" cy="39" r="6.4" fill="#fffcf4"/><circle cx="43.2" cy="41" r="6.4" fill="#fffcf4"/><circle cx="26.4" cy="31" r="6.4" fill="#fffcf4"/><circle cx="37.6" cy="31" r="6.4" fill="#fffcf4"/><circle cx="32" cy="22" r="6.4" fill="#fffcf4"/><circle cx="18.8" cy="39" r="2" fill="#fffcf4"/><circle cx="30" cy="20" r="2" fill="#fffcf4"/></svg>`},
+{id:"s_cosmos",nm:"コスモス",r:1,tip:"コスモスは あきに さく おはなだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 28.6V56" stroke="#5da95f" stroke-width="3" stroke-linecap="round"/><path d="M32 47c-6.4-.8-9.6-5-10.6-10.4 6.4.8 9.6 5 10.6 10.4z" fill="#5da95f"/><path d="M32 41c5.4-.8 8.2-4.2 9-8.8-5.4.8-8.2 4.2-9 8.8z" fill="#5da95f"/><g transform="rotate(0.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(45.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(90.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(135.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(180.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(225.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(270.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><g transform="rotate(315.0 32 25)"><ellipse cx="32" cy="12.0" rx="4.6" ry="8.1" fill="#f4c4ca"/></g><circle cx="32" cy="25" r="4.6" fill="#f3c44e"/></svg>`},
+{id:"s_higan",nm:"ひがんばな",r:2,tip:"ひがんばなは まっかで ほそい はなびら",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 32V58" stroke="#5da95f" stroke-width="3" stroke-linecap="round"/><g transform="rotate(0 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(60 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(120 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(180 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(240 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(300 32 28)"><path d="M32 28C29 20 22 14 16 11c4 6 6 9 7 13-3-2-6-3-9-3 5 3 9 7 12 12" stroke="#d9584e" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="rotate(30 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><g transform="rotate(90 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><g transform="rotate(150 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><g transform="rotate(210 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><g transform="rotate(270 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><g transform="rotate(330 32 28)"><path d="M32 28C30 20 27 14 24 10" stroke="#ea7a6a" stroke-width="1.7" fill="none" stroke-linecap="round"/><circle cx="24" cy="9" r="1.9" fill="#f3c44e"/></g><circle cx="32" cy="28" r="3.6" fill="#b8402f"/></svg>`},
+{id:"s_kiku",nm:"きく",r:2,tip:"きくは 9月の おはな。いいにおいが するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 38V57" stroke="#5da95f" stroke-width="3" stroke-linecap="round"/><path d="M32 50c-6-1-9-5-10-10 6 1 9 5 10 10z" fill="#5da95f"/><g transform="rotate(0.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(22.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(45.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(67.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(90.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(112.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(135.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(157.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(180.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(202.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(225.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(247.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(270.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(292.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(315.0 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(337.5 32 25)"><ellipse cx="32" cy="12.5" rx="3" ry="6.6" fill="#f3c44e"/></g><g transform="rotate(11.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(33.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(56.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(78.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(101.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(123.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(146.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(168.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(191.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(213.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(236.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(258.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(281.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(303.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(326.0 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><g transform="rotate(348.5 32 25)"><ellipse cx="32" cy="16.5" rx="2.8" ry="5.6" fill="#f9e3a0"/></g><circle cx="32" cy="25" r="5.4" fill="#e0a92e"/></svg>`},
+{id:"s_kikyou",nm:"ききょう",r:2,tip:"ききょうは ほしの かたちの おはな",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 40V58" stroke="#5da95f" stroke-width="3" stroke-linecap="round"/><path d="M32 52c-6-1-9-5-10-10 6 1 9 5 10 10z" fill="#5da95f"/><path d="M32 4 39 21 57 23 44 33 47 51 32 42 17 51 20 33 7 23 25 21Z" fill="#a482c9"/><path d="M32 4 39 21 57 23 44 33 32 26Z" fill="#a482c9" opacity=".55" stroke="none"/><path d="M32 26V6M32 26l13-3M32 26l11 8M32 26l-11 8M32 26l-13-3" stroke="#8a8090" stroke-width="1.1" opacity=".5"/><circle cx="32" cy="26" r="4.6" fill="#fffcf4"/><circle cx="32" cy="26" r="2.2" fill="#f3c44e"/></svg>`},
+{id:"s_enokoro",nm:"えのころぐさ",r:1,tip:"ねこじゃらしとも よばれる くさだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M26 60c-1-14 1-22 5-28" stroke="#5da95f" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M26 50c-7-1-11-6-12-12 7 1 11 6 12 12z" fill="#5da95f"/><path d="M31 32c-3-13 0-22 6-24 5-1 8 5 6 12-2 7-7 11-12 12z" fill="#c9e4a6"/><path d="M37 8c5-1 8 5 6 12-1 4-3 7-6 9 3-8 3-15 0-21z" fill="#7fc079" opacity=".8" stroke="none"/><path d="M32.5 31.0l6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M35.5 28.4l-6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M32.5 25.8l6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M35.5 23.2l-6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M32.5 20.6l6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M35.5 18.0l-6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M32.5 15.4l6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M35.5 12.8l-6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/><path d="M32.5 10.2l6 -3.4" stroke="#7fc079" stroke-width="1.5" stroke-linecap="round"/></svg>`},
+{id:"s_tonbo",nm:"あかとんぼ",r:1,tip:"とんぼは まえにも うしろにも とべるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="16" cy="25" rx="14" ry="4.4" fill="#d8e2ec" transform="rotate(-9 16 25)"/><ellipse cx="48" cy="25" rx="14" ry="4.4" fill="#d8e2ec" transform="rotate(9 48 25)"/><ellipse cx="19" cy="34" rx="11.5" ry="3.8" fill="#d8e2ec" transform="rotate(9 19 34)"/><ellipse cx="45" cy="34" rx="11.5" ry="3.8" fill="#d8e2ec" transform="rotate(-9 45 34)"/><ellipse cx="32" cy="36" rx="3.8" ry="19" fill="#d9584e"/><path d="M28.6 32h6.8M28.8 40h6.4M29.4 48h5.2" stroke="#b8402f" stroke-width="1.5" stroke-linecap="round"/><circle cx="32" cy="14" r="6.6" fill="#ea7a6a"/><circle cx="29.4" cy="12.4" r="2.1" fill="#4a3a30" stroke="none"/><circle cx="34.6" cy="12.4" r="2.1" fill="#4a3a30" stroke="none"/><circle cx="30" cy="11.6" r=".7" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.2" cy="11.6" r=".7" fill="#fffcf4" stroke="none" class="d"/></svg>`},
+{id:"s_suzumushi",nm:"すずむし",r:2,tip:"すずむしは はねを こすって ないているよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="22" cy="36" rx="13" ry="9" fill="#5a4a3c" transform="rotate(-14 22 36)"/><ellipse cx="42" cy="36" rx="13" ry="9" fill="#4a3a30" transform="rotate(14 42 36)" stroke="none"/><path d="M16 32c6 2 10 5 12 9M48 32c-6 2-10 5-12 9" stroke="#5a4a3c" stroke-width="1" opacity=".8"/><ellipse cx="32" cy="38" rx="7" ry="14" fill="#3c3542" stroke="none"/><circle cx="32" cy="22" r="7.4" fill="#3c3542" stroke="none"/><path d="M27 16L14 4M37 16l13-12" stroke="#4a3a30" stroke-width="1.6" stroke-linecap="round"/><circle cx="29.4" cy="21" r="1.9" fill="#f9e3a0"/><circle cx="34.6" cy="21" r="1.9" fill="#f9e3a0"/><path d="M24 48l-6 8M40 48l6 8M22 42l-8 4M42 42l8 4" stroke="#3c3542" stroke-width="2" stroke-linecap="round"/></svg>`},
+{id:"s_koorogi",nm:"こおろぎ",r:1,tip:"こおろぎは あきの よるに リンリン なくよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="22" cy="35" rx="12" ry="8" fill="#8a5f38" transform="rotate(-12 22 35)"/><ellipse cx="42" cy="35" rx="12" ry="8" fill="#c08f55" transform="rotate(12 42 35)"/><ellipse cx="32" cy="37" rx="7.4" ry="14" fill="#8a5f38"/><circle cx="32" cy="22" r="7.6" fill="#8a5f38"/><path d="M27 16L15 6M37 16l12-10" stroke="#5a4a3c" stroke-width="1.6" stroke-linecap="round"/><circle cx="28.6" cy="21" r="2" fill="#4a3a30" stroke="none"/><circle cx="29.3" cy="20.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.4" cy="21" r="2" fill="#4a3a30" stroke="none"/><circle cx="36.1" cy="20.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><path d="M23 44l-7 3 4 7M41 44l7 3-4 7" stroke="#8a5f38" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`},
+{id:"s_tsubame",nm:"つばめ",r:2,tip:"つばめは あたたかい くにへ とんでいくよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 22c10 0 18 5 26 14-9-2-16 0-22 5-2-6-4-13-4-19z" fill="#41526a"/><path d="M32 22C22 22 14 27 6 36c9-2 16 0 22 5 2-6 4-13 4-19z" fill="#41526a"/><ellipse cx="32" cy="32" rx="8" ry="14" fill="#41526a"/><ellipse cx="32" cy="34" rx="5.4" ry="10" fill="#fffcf4"/><circle cx="32" cy="18" r="7.4" fill="#41526a"/><path d="M28 18c0-4 2-6 4-6s4 2 4 6c-2-1.4-6-1.4-8 0z" fill="#d9584e"/><path d="M32 21l-4 2.6 4 2.6 4-2.6z" fill="#f3c44e"/><circle cx="28.6" cy="16" r="1.8" fill="#fffcf4"/><circle cx="35.4" cy="16" r="1.8" fill="#fffcf4"/><circle cx="28.6" cy="16" r=".9" fill="#2f2820" stroke="none"/><circle cx="35.4" cy="16" r=".9" fill="#2f2820" stroke="none"/><path d="M32 46l-8 12 8-5 8 5z" fill="#41526a"/></svg>`},
+{id:"s_budou",nm:"ぶどう",r:1,tip:"ぶどうは ちいさな つぶが あつまっているよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 13c-2-4-6-5.6-6-5.6" stroke="#5da95f" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M32 12c4-4 9-4 9-4 0 4-4 6-9 6z" fill="#5da95f"/><g fill="#a482c9"><circle cx="32" cy="21" r="6.2"/><circle cx="24" cy="29" r="6.2"/><circle cx="40" cy="29" r="6.2"/><circle cx="32" cy="33" r="6.2"/><circle cx="24" cy="41" r="6.2"/><circle cx="40" cy="41" r="6.2"/><circle cx="32" cy="45" r="6.2"/></g><circle cx="30" cy="19" r="1.9" fill="#c4aee0"/><circle cx="22" cy="27" r="1.6" fill="#c4aee0"/></svg>`},
+{id:"s_nashi",nm:"なし",r:1,tip:"なしは シャリシャリして あまいよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 17c2.6 0 3.6 2.6 3.6 5.4 8 2.4 13 9.4 13 17.4 0 9-7.4 14.4-16.6 14.4S15.4 48.8 15.4 39.8c0-8 5-15 13-17.4 0-2.8 1-5.4 3.6-5.4z" fill="#e0b478"/><path d="M35.6 22.4c8 2.4 13 9.4 13 17.4 0 4.4-1.8 8-4.8 10.6 1.4-12-2-22-8.2-28z" fill="#c08f55" opacity=".45" stroke="none"/><ellipse cx="25" cy="34" rx="4.4" ry="3" fill="#f2d7ae" opacity=".55" transform="rotate(-28 25 34)" stroke="none"/><g fill="#c08f55" opacity=".65" stroke="none"><circle cx="24" cy="42" r="1"/><circle cx="33" cy="37" r="1"/><circle cx="40" cy="45" r="1"/><circle cx="28" cy="50" r="1"/><circle cx="37" cy="51" r="1"/></g><path d="M32 17v-5" stroke="#8a5f38" stroke-width="2.6" stroke-linecap="round"/><path d="M33 13c4-4 9-3 9-3-1 5-5 6-9 6z" fill="#5da95f"/></svg>`},
+{id:"s_ichijiku",nm:"いちじく",r:2,tip:"いちじくの なかは つぶつぶだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 16c1.8 0 3 2 3.4 4.6C44 23 50 30.6 50 39.4 50 48.6 42 55 32 55s-18-6.4-18-15.6c0-8.8 6-16.4 14.6-18.8.4-2.6 1.6-4.6 3.4-4.6z" fill="#a482c9"/><path d="M35.4 20.6C44 23 50 30.6 50 39.4c0 4.6-2 8.4-5.4 11.2 1.4-13-2.6-24-9.2-30z" fill="#c4aee0" opacity=".5" stroke="none"/><path d="M32 38l9 12c-5.4 3-12.6 3-18 0z" fill="#ee8fa6"/><path d="M32 42l5 7c-3 1.6-7 1.6-10 0z" fill="#f9cdd8"/><path d="M32 16v-4" stroke="#5da95f" stroke-width="2.4" stroke-linecap="round"/><path d="M26 14c-5-3-5-7-5-7 6 1 8 4 9 7zM38 14c5-3 5-7 5-7-6 1-8 4-9 7z" fill="#5da95f"/></svg>`},
+{id:"s_zakuro",nm:"ざくろ",r:2,tip:"ざくろの なかには つぶが いっぱい",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><circle cx="32" cy="36" r="17" fill="#d9584e"/><path d="M32 19a17 17 0 0 1 17 17c0-8-7-14-17-14z" fill="#ea7a6a" opacity=".6" stroke="none"/><path d="M22 28c6 8 14 8 20 0 3 8 1 16-10 16s-13-8-10-16z" fill="#fffcf4"/><g fill="#b8402f"><circle cx="27" cy="33" r="2.4"/><circle cx="33" cy="31" r="2.4"/><circle cx="38" cy="34" r="2.4"/><circle cx="29" cy="38" r="2.4"/><circle cx="35" cy="38" r="2.4"/><circle cx="32" cy="43" r="2.4"/></g><path d="M27 18l3 4 2-5 2 5 3-4-1 5h-8z" fill="#c08f55"/></svg>`},
+{id:"s_inaho",nm:"いなほ",r:1,tip:"おこめは いねから とれるんだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 60c0-24 2-34 2-34" stroke="#5da95f" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M34 26c8 4 10 10 8 16-6-2-9-8-8-16z" fill="#7fc079" opacity=".9" stroke="none"/><g transform="rotate(18 34 24)"><ellipse cx="40" cy="24" rx="5" ry="2.6" fill="#f3c44e"/></g><g transform="rotate(-18 34 20)"><ellipse cx="28" cy="20" rx="5" ry="2.6" fill="#f3c44e"/></g><g transform="rotate(18 34 16)"><ellipse cx="40" cy="16" rx="5" ry="2.6" fill="#f3c44e"/></g><g transform="rotate(-18 34 12)"><ellipse cx="28" cy="12" rx="5" ry="2.6" fill="#f3c44e"/></g><g transform="rotate(18 34 8)"><ellipse cx="40" cy="8" rx="5" ry="2.6" fill="#f3c44e"/></g><g transform="rotate(-18 34 4)"><ellipse cx="28" cy="4" rx="5" ry="2.6" fill="#f3c44e"/></g><path d="M34 26V4" stroke="#e0a92e" stroke-width="2.2" stroke-linecap="round"/><path d="M30 44c-7-1-11-6-12-12 7 1 11 6 12 12z" fill="#5da95f"/></svg>`},
+{id:"s_urokogumo",nm:"うろこぐも",r:1,tip:"あきの そらには ちいさな くもが ならぶよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><circle cx="47" cy="15" r="9" fill="#f3c44e" opacity=".9" stroke="none"/><g><ellipse cx="11" cy="31" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="11" cy="29.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="25" cy="31" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="25" cy="29.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="39" cy="31" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="39" cy="29.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="53" cy="31" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="53" cy="29.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="18" cy="41" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="18" cy="39.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="32" cy="41" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="32" cy="39.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="46" cy="41" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="46" cy="39.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="60" cy="41" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="60" cy="39.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="11" cy="51" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="11" cy="49.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="25" cy="51" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="25" cy="49.6" rx="7" ry="4.2" fill="#fffcf4"/></g><g><ellipse cx="39" cy="51" rx="7" ry="4.2" fill="#d8e2ec"/><ellipse cx="39" cy="49.6" rx="7" ry="4.2" fill="#fffcf4"/></g></svg>`},
+{id:"s_kakashi",nm:"かかし",r:2,tip:"かかしは たんぼを まもって いるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 58V24" stroke="#8a5f38" stroke-width="4" stroke-linecap="round"/><path d="M10 30h44" stroke="#8a5f38" stroke-width="3.6" stroke-linecap="round"/><path d="M18 30l-2 10M46 30l2 10" stroke="#c08f55" stroke-width="2.4" stroke-linecap="round"/><path d="M20 34h24l-4 18H24z" fill="#d9584e"/><path d="M20 34h24l-1.2 5H21.2z" fill="#ea7a6a"/><circle cx="32" cy="18" r="10" fill="#f2d7ae"/><path d="M14 14h36l-4-4H18z" fill="#c08f55"/><ellipse cx="32" cy="10" rx="9" ry="5" fill="#e0b478"/><circle cx="28.4" cy="18" r="1.8" fill="#4a3a30" stroke="none"/><circle cx="35.6" cy="18" r="1.8" fill="#4a3a30" stroke="none"/><path d="M29 22.6q3 2.4 6 0" stroke="#4a3a30" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><ellipse cx="24.4" cy="21.5" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="39.6" cy="21.5" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"s_ojiichan",nm:"おじいちゃん",r:2,tip:"9月は おじいちゃんに ありがとうを つたえる月",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M13 56c0-11 8.6-17 19-17s19 6 19 17z" fill="#5b96cc"/><circle cx="32" cy="27" r="13" fill="#f2d7ae"/><path d="M18 22c2-8 7-12 14-12s12 4 14 12c-4-4-9-3-14-3s-10-1-14 3z" fill="#e6dcc8"/><circle cx="26" cy="27" r="5" fill="none" stroke="#8a5f38" stroke-width="1.6"/><circle cx="38" cy="27" r="5" fill="none" stroke="#8a5f38" stroke-width="1.6"/><path d="M31 27h2" stroke="#8a5f38" stroke-width="1.6"/><circle cx="26" cy="27" r="1.7" fill="#4a3a30" stroke="none"/><circle cx="38" cy="27" r="1.7" fill="#4a3a30" stroke="none"/><path d="M28 35q4 3 8 0" stroke="#8a5f38" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/><path d="M26 38c4 4 8 4 12 0 0 4-3 6-6 6s-6-2-6-6z" fill="#e6dcc8"/></svg>`},
+{id:"s_obaachan",nm:"おばあちゃん",r:2,tip:"おばあちゃんに おてがみを かいてみよう",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M13 56c0-11 8.6-17 19-17s19 6 19 17z" fill="#ee8fa6"/><circle cx="32" cy="27" r="13" fill="#f2d7ae"/><path d="M17 24c1-9 7-14 15-14s14 5 15 14c-1-6-6-7-15-7s-14 1-15 7z" fill="#e6dcc8"/><circle cx="18" cy="21" r="4.4" fill="#e6dcc8"/><circle cx="46" cy="21" r="4.4" fill="#e6dcc8"/><circle cx="27" cy="27" r="1.8" fill="#4a3a30" stroke="none"/><circle cx="37" cy="27" r="1.8" fill="#4a3a30" stroke="none"/><path d="M24 24c1.6-1.4 4-1.4 5.6 0M34.4 24c1.6-1.4 4-1.4 5.6 0" stroke="#8a5f38" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/><path d="M28 34q4 3.4 8 0" stroke="#8a5f38" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/><ellipse cx="22.6" cy="31" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="41.4" cy="31" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`}
+],
+10:[
+{id:"o_jack",nm:"ジャックオーランタン",r:1,tip:"ハロウィンは かぼちゃを かざる おまつり",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="19" ry="2.6" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M30 22v-8c0-2.5 4.2-3.5 6-.8" stroke="#43904f" stroke-width="3.4" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="38" rx="23" ry="17.6" fill="#d4741c"/><ellipse cx="32" cy="38" rx="15.6" ry="17.6" fill="#ef9442"/><ellipse cx="32" cy="38" rx="7.2" ry="17.6" fill="#f7a95a"/><path d="M14 30c-2.4 6.6-2 11.6 0 16M50 30c2.4 6.6 2 11.6 0 16" stroke="#d9584e" stroke-width="1.5" fill="none" opacity=".5"/><path d="M22 34.5l8.6-4.6v9.2z" fill="#4a3a30" stroke="none"/><path d="M42 34.5l-8.6-4.6v9.2z" fill="#4a3a30" stroke="none"/><path d="M32 38.5l3 4h-6z" fill="#4a3a30" stroke="none"/><path d="M21.4 45.4l4.4 5.4 3.8-4.4 3.8 5.4 3.8-4.4 3.4 4.4 2.4-5" stroke="#4a3a30" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/></svg>`},
+{id:"o_obake",nm:"おばけ",r:1,tip:"おばけは ハロウィンの にんきもの",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 8c9.4 0 17 7.8 17 18v24.6l-5.6-5.6-5.6 5.6-5.8-5.6-5.6 5.6-5.6-5.6L15 50.6V26c0-10.2 7.6-18 17-18z" fill="#fffcf4"/><path d="M32 8c9.4 0 17 7.8 17 18v24.6l-3-3V26c0-8.6-5.6-15.6-13-17.6.6-.2 1.4-.4 2-.4z" fill="#e6dcc8" opacity=".8" stroke="none"/><circle cx="25.6" cy="26" r="2.6" fill="#4a3a30" stroke="none"/><circle cx="26.5" cy="25.1" r=".9" fill="#fffcf4" stroke="none" class="d"/><circle cx="38.4" cy="26" r="2.6" fill="#4a3a30" stroke="none"/><circle cx="39.3" cy="25.1" r=".9" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="32" cy="34" rx="3.4" ry="4.6" fill="#4a3a30" stroke="none"/><ellipse cx="20.6" cy="31.4" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="43.4" cy="31.4" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"o_kuroneko",nm:"くろねこ",r:1,tip:"ねこの ひげは まわりを かんじる センサー",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M20 22l-1.6-11 9.2 6zM40 22l1.6-11-9.2 6z" fill="#3c3542" stroke="none"/><path d="M21.8 20.2l-.9-6.4 5.2 3.4zM38.2 20.2l.9-6.4-5.2 3.4z" fill="#ee8fa6" opacity=".7" stroke="none"/><path d="M18 55c0-11.5 5.4-19 12-19s12 7.5 12 19z" fill="#3c3542" stroke="none"/><path d="M42 55c7.4 0 11.4-5 10-11-1.2-5-6.4-6.2-7.8-2.6 3.6.2 5 2.6 4.4 5.6-.9 3.8-3.9 6-8.2 6z" fill="#3c3542" stroke="none"/><circle cx="30" cy="28" r="10.6" fill="#3c3542" stroke="none"/><ellipse cx="25.9" cy="27.4" rx="2.4" ry="3" fill="#f3c44e"/><ellipse cx="34.1" cy="27.4" rx="2.4" ry="3" fill="#f3c44e"/><ellipse cx="25.9" cy="27.4" rx=".9" ry="2.4" fill="#3c3542" stroke="none"/><ellipse cx="34.1" cy="27.4" rx=".9" ry="2.4" fill="#3c3542" stroke="none"/><path d="M30 32l-1.6 1.6h3.2z" fill="#ee8fa6"/><path d="M30 34.2c-1.1 1.6-2.7 1.6-3.8.7M30 34.2c1.1 1.6 2.7 1.6 3.8.7" stroke="#8a8090" stroke-width="1.1" fill="none" stroke-linecap="round" class="d"/><path d="M19.4 29.6l-6-1.6M19.2 32.2l-5.6 1.2M40.6 29.6l6-1.6M40.8 32.2l5.6 1.2" stroke="#8a8090" stroke-width="1" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_majo",nm:"まじょのぼうし",r:1,tip:"まじょは とんがりぼうしを かぶるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="19" ry="2.6" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 6c3 0 5 4 7 12l7 26H18l7-26c2-8 4-12 7-12z" fill="#3c3542" stroke="none"/><path d="M32 6c3 0 5 4 7 12l7 26h-8l-5-24c-1-5-2-10-1-14z" fill="#5a4a3c" opacity=".7" stroke="none"/><ellipse cx="32" cy="45" rx="27" ry="7" fill="#3c3542" stroke="none"/><ellipse cx="32" cy="43.4" rx="27" ry="7" fill="#5a4a3c"/><rect x="20" y="33" width="24" height="7" rx="2" fill="#a482c9"/><circle cx="32" cy="36.5" r="4.4" fill="#f3c44e"/><path d="M32 32.6l1.2 3 3.2.2-2.4 2 .8 3.2-2.8-1.8-2.8 1.8.8-3.2-2.4-2 3.2-.2z" fill="#fffcf4"/></svg>`},
+{id:"o_houki",nm:"まほうのほうき",r:2,tip:"まじょは ほうきで そらを とぶよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M8 56L34 30" stroke="#8a5f38" stroke-width="5" stroke-linecap="round"/><circle cx="8" cy="56" r="3.4" fill="#8a5f38"/><g transform="rotate(-45 40 24)"><path d="M40 10c9 0 14 6 15 15 .6 5.6-1 10-2 10H27c-1 0-2.6-4.4-2-10 1-9 6-15 15-15z" fill="#e0b478"/><path d="M40 10c9 0 14 6 15 15 .6 5.6-1 10-2 10h-6c1-10-1-19-7-25z" fill="#c08f55" opacity=".55" stroke="none"/><g stroke="#c08f55" stroke-width="1.3" stroke-linecap="round" class="d"><path d="M33 16v18M40 14v21M47 16v18M29 22v12M51 22v12"/></g><rect x="31" y="6" width="18" height="7" rx="3.4" fill="#d9584e"/><rect x="31" y="6" width="18" height="3" rx="1.5" fill="#ea7a6a"/></g></svg>`},
+{id:"o_koumori",nm:"コウモリ",r:1,tip:"コウモリは よるに とぶ どうぶつだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 26c8 0 13 4 18-2 3-4 6-10 6-10 1 8-1 14-3 18 4-1 7-1 9 0-6 4-11 8-15 14-4-6-9-10-15-10z" fill="#3c3542" stroke="none"/><path d="M32 26c-8 0-13 4-18-2-3-4-6-10-6-10-1 8 1 14 3 18-4-1-7-1-9 0 6 4 11 8 15 14 4-6 9-10 15-10z" fill="#3c3542" stroke="none"/><ellipse cx="32" cy="32" rx="8" ry="11" fill="#5a4a3c"/><path d="M26 20l-2-9 6 5zM38 20l2-9-6 5z" fill="#5a4a3c"/><circle cx="28.6" cy="28" r="2.2" fill="#f3c44e"/><circle cx="35.4" cy="28" r="2.2" fill="#f3c44e"/><circle cx="28.6" cy="28" r="1" fill="#3c3542" stroke="none"/><circle cx="35.4" cy="28" r="1" fill="#3c3542" stroke="none"/><path d="M29 34q3 2.6 6 0" stroke="#f9cdd8" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_mummy",nm:"ミイラ",r:2,tip:"ハロウィンの かそうの ひとつだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="46" rx="13" ry="11" fill="#f6edda"/><circle cx="32" cy="30" r="12" fill="#f6edda"/><g stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round"><path d="M21 24h22M20 30h24M21 36h22M20 42h24M22 48h20M24 53h16"/></g><path d="M19 27l26-6" stroke="#e6dcc8" stroke-width="5.4" stroke-linecap="round"/><path d="M20 38l24 5" stroke="#e6dcc8" stroke-width="5" stroke-linecap="round"/><path d="M18 46l28-3" stroke="#e6dcc8" stroke-width="4.6" stroke-linecap="round"/><path d="M20 33.4l10-2.6" stroke="#e6dcc8" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="32" r="2.6" fill="#4a3a30" stroke="none"/><circle cx="38" cy="31" r=".9" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="44" cy="36.5" rx="2.4" ry="1.7" fill="#ee8fa6" opacity=".55" stroke="none"/><path d="M33 38q4 2.6 7 0" stroke="#4a3a30" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><path d="M47 41l7 7" stroke="#f6edda" stroke-width="5" stroke-linecap="round"/><path d="M49 43l4 4" stroke="#e6dcc8" stroke-width="1.4" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_dracula",nm:"ドラキュラ",r:3,tip:"マントを つけた ハロウィンの おうさま",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="19" ry="2.6" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 36c-13 0-22 8-22 20h44c0-12-9-20-22-20z" fill="#3c3542" stroke="none"/><path d="M32 36c-4 0-7 6-7 20h14c0-14-3-20-7-20z" fill="#d9584e"/><path d="M22 36c-4 2-6 6-6 10 4-3 8-5 12-6zM42 36c4 2 6 6 6 10-4-3-8-5-12-6z" fill="#b8402f"/><circle cx="32" cy="24" r="12" fill="#f2d7ae"/><path d="M18 22c0-8 6-13 14-13s14 5 14 13c-3-3-6-1-8-4-2 3-4 5-6 5s-4-2-6-5c-2 3-5 1-8 4z" fill="#3c3542" stroke="none"/><circle cx="27.6" cy="24" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="28.3" cy="23.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><circle cx="36.4" cy="24" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="37.1" cy="23.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><path d="M27 30q5 3.4 10 0" stroke="#8a5f38" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><path d="M28.6 31l1.2 3.4 1.2-3.4zM33 31l1.2 3.4 1.2-3.4z" fill="#fffcf4"/></svg>`},
+{id:"o_kumo",nm:"クモ",r:1,tip:"クモは あしが 8ほん あるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><g stroke="#3c3542" stroke-width="2.6" fill="none" stroke-linecap="round"><path d="M24 32L10 22l-3 8M24 38L8 36l-2 8M25 44L12 50l1 8M27 48l-8 10 4 4"/><path d="M40 32l14-10 3 8M40 38l16-2 2 8M39 44l13 6-1 8M37 48l8 10-4 4"/></g><ellipse cx="32" cy="40" rx="13" ry="12" fill="#3c3542" stroke="none"/><circle cx="32" cy="26" r="9" fill="#5a4a3c"/><circle cx="28.4" cy="25" r="2.2" fill="#fffcf4"/><circle cx="35.6" cy="25" r="2.2" fill="#fffcf4"/><circle cx="28.4" cy="25" r="1.1" fill="#3c3542" stroke="none"/><circle cx="35.6" cy="25" r="1.1" fill="#3c3542" stroke="none"/><circle cx="25" cy="20" r="1.4" fill="#fffcf4" stroke="none" class="d"/><circle cx="39" cy="20" r="1.4" fill="#fffcf4" stroke="none" class="d"/><path d="M29 31q3 2.4 6 0" stroke="#ee8fa6" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><path d="M27 38l5 5 5-5" stroke="#8a8090" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_kumonosu",nm:"クモのす",r:2,tip:"クモは いとで あみを つくるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 4V60M4 32h56M12 12l40 40M52 12L12 52" stroke="#a9b3ba" stroke-width="1.6"/><path d="M32 23 L38 26 L41 32 L38 38 L32 41 L26 38 L23 32 L26 26 Z" fill="none" stroke="#c4aee0" stroke-width="1.6"/><path d="M32 15 L44 20 L49 32 L44 44 L32 49 L20 44 L15 32 L20 20 Z" fill="none" stroke="#c4aee0" stroke-width="1.6"/><path d="M32 7 L50 14 L57 32 L50 50 L32 57 L14 50 L7 32 L14 14 Z" fill="none" stroke="#c4aee0" stroke-width="1.6"/><circle cx="44" cy="20" r="4.6" fill="#3c3542" stroke="none"/><circle cx="42.6" cy="19" r="1.2" fill="#fffcf4" stroke="none" class="d"/><circle cx="45.4" cy="19" r="1.2" fill="#fffcf4" stroke="none" class="d"/></svg>`},
+{id:"o_candy",nm:"キャンディ",r:1,tip:"あまい おかしは ときどき たのしもう",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="32" rx="15" ry="12" fill="#d9584e"/><path d="M22 26c6-4 14-4 20 0" stroke="#fffcf4" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M24 38c5 3 11 3 16 0" stroke="#ea7a6a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M17 32L4 24v16z" fill="#f3c44e"/><path d="M47 32l13-8v16z" fill="#f3c44e"/><path d="M17 32L8 28v8z" fill="#e0a92e"/><path d="M47 32l9-4v8z" fill="#e0a92e"/></svg>`},
+{id:"o_lolipop",nm:"ロリポップ",r:1,tip:"ぐるぐる もようの ペロペロキャンディ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 40v18" stroke="#fffcf4" stroke-width="5" stroke-linecap="round"/><path d="M32 40v18" stroke="#d8e2ec" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="24" r="18" fill="#fffcf4"/><path d="M32 24c0-3 3-4 5-2s1 6-3 8-9-1-10-6 3-11 9-12 14 3 16 11" stroke="#ee8fa6" stroke-width="4.6" fill="none" stroke-linecap="round"/><path d="M32 24c0 3-3 4-5 2s-1-6 3-8 9 1 10 6-3 11-9 12-14-3-16-11" stroke="#8fa6dd" stroke-width="4.6" fill="none" stroke-linecap="round"/><circle cx="32" cy="24" r="18" fill="none" stroke="#c4aee0" stroke-width="1.6"/></svg>`},
+{id:"o_choco",nm:"チョコレート",r:1,tip:"チョコは カカオの みから できるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><rect x="8" y="20" width="48" height="26" rx="3" fill="#8a5f38"/><path d="M8 20h48v5H8z" fill="#c08f55"/><path d="M24 20v26M40 20v26M8 33h48" stroke="#5a4a3c" stroke-width="2"/><path d="M8 23c0-2 1-3 3-3h9v26h-9c-2 0-3-1-3-3z" fill="#d9584e"/><path d="M11 26h6M11 31h6" stroke="#fffcf4" stroke-width="1.6" stroke-linecap="round"/></svg>`},
+{id:"o_bucket",nm:"おかしのバケツ",r:2,tip:"「トリック オア トリート」って いうんだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="19" ry="2.6" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M14 30h36l-4 24H18z" fill="#ef9442"/><path d="M14 30h36l-1.4 7H15.4z" fill="#f7a95a"/><path d="M18 22c0-7 6-12 14-12s14 5 14 12" stroke="#3c3542" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M22 37l5-3v6zM42 37l-5-3v6z" fill="#4a3a30" stroke="none"/><path d="M25 45q7 5 14 0" stroke="#4a3a30" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="22" cy="26" r="5" fill="#d9584e"/><circle cx="42" cy="26" r="5" fill="#a482c9"/><circle cx="32" cy="23" r="5" fill="#f3c44e"/></svg>`},
+{id:"o_lantern",nm:"カンテラ",r:2,tip:"くらい よるを あかるく てらすよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 6v6" stroke="#8a5f38" stroke-width="2.4" stroke-linecap="round"/><path d="M22 12c0-5 4-8 10-8s10 3 10 8" stroke="#8a5f38" stroke-width="2.6" fill="none"/><path d="M18 16h28l-3 6H21z" fill="#8a5f38"/><path d="M21 22h22v26H21z" fill="#f9e3a0"/><path d="M21 22h22v26H21z" fill="none" stroke="#8a5f38" stroke-width="3"/><path d="M32 22v26M21 35h22" stroke="#8a5f38" stroke-width="2"/><path d="M18 48h28l-2 6H20z" fill="#8a5f38"/><path d="M32 28c3 3 4 6 4 8 0 3-2 5-4 5s-4-2-4-5c0-2 1-5 4-8z" fill="#ef9442"/></svg>`},
+{id:"o_momiji",nm:"もみじ",r:1,tip:"あきに なると はっぱが あかく なるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 58c0-10 0-14 0-16" stroke="#8a5f38" stroke-width="2.4" stroke-linecap="round" fill="none"/><path d="M32 6c1.8 6 3.6 11.8 5.9 14.2 2.3-1.2 4.6-2.4 6.9-4.7 0 3.5-.6 6.4-1.8 9.4 3.5-.6 7-1.8 10.5-3.5-1.8 3.5-4.1 8-7 10.4 2.9 1.2 5.8 1.7 9.3 1.7-3.5 2.9-7 5-11 5.8 1.8 2.3 3.5 4 5.8 5.8-4.1.6-7.5 0-11-1.2 0 2.9.6 5.2 1.8 8.1-2.9-1.7-5.2-3.5-7-6.4-1.8 2.9-4.1 4.7-7 6.4 1.2-2.9 1.8-5.2 1.8-8.1-3.5 1.2-6.9 1.8-11 1.2 2.3-1.8 4-3.5 5.8-5.8-4.1-.8-7.5-2.9-11-5.8 3.5 0 6.4-.5 9.3-1.7-2.9-2.4-5.2-6.9-7-10.4 3.5 1.7 7 2.9 10.5 3.5-1.2-3-1.8-5.9-1.8-9.4 2.3 2.3 4.6 3.5 6.9 4.7C28.4 17.8 30.2 12 32 6z" fill="#d9584e"/><path d="M32 13v29" stroke="#b8402f" stroke-width="1.2" opacity=".45"/><path d="M32 23l-9-5M32 25l9-5M32 33l-7 5M32 33l7 5" stroke="#b8402f" stroke-width="1.1" opacity=".4"/></svg>`},
+{id:"o_icho",nm:"いちょう",r:1,tip:"いちょうの はっぱは きいろい おうぎのかたち",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 30C20 30 13 25 13 18 13 11 21 5 32 5s19 6 19 13c0 7-7 12-19 12z" fill="#f3c44e"/><path d="M32 5c-2.4 3.4-3.4 7-3.4 11 1.2-1.6 5.6-1.6 6.8 0 0-4-1-7.6-3.4-11z" fill="#fffcf4"/><path d="M32 30V16" stroke="#e0a92e" stroke-width="1.2" opacity=".6"/><path d="M22 8c-3 6-4 12-3 18M42 8c3 6 4 12 3 18" stroke="#e0a92e" stroke-width="1.1" opacity=".5"/><path d="M17 13c-2 5-2 10-1 14M47 13c2 5 2 10 1 14" stroke="#e0a92e" stroke-width="1" opacity=".4"/><path d="M32 30v24" stroke="#c08f55" stroke-width="2.8" stroke-linecap="round"/><path d="M32 44c-5 0-8-2-9-5 4-1 7 1 9 5z" fill="#f9e3a0" opacity=".9" stroke="none"/></svg>`},
+{id:"o_ochiba",nm:"おちば",r:1,tip:"おちばを ふむと カサカサ おとが するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M4 52h56" stroke="#c08f55" stroke-width="3" stroke-linecap="round" opacity=".5"/><ellipse cx="18" cy="44" rx="11" ry="7" fill="#d9584e" transform="rotate(-18 18 44)"/><path d="M9 47c6-3 12-4 18-3" stroke="#b8402f" stroke-width="1" opacity=".6"/><ellipse cx="44" cy="44" rx="11" ry="7" fill="#f3c44e" transform="rotate(16 44 44)"/><path d="M36 42c6 0 12 2 17 5" stroke="#e0a92e" stroke-width="1" opacity=".6"/><ellipse cx="31" cy="34" rx="12" ry="7.4" fill="#ef9442" transform="rotate(-8 31 34)"/><path d="M20 35c8-2 15-1 22 2" stroke="#d4741c" stroke-width="1.1" opacity=".6"/><ellipse cx="24" cy="21" rx="9" ry="6" fill="#c08f55" transform="rotate(24 24 21)"/><ellipse cx="44" cy="24" rx="8" ry="5.4" fill="#ea7a6a" transform="rotate(-24 44 24)"/></svg>`},
+{id:"o_donguri",nm:"どんぐり",r:1,tip:"どんぐりは かしの きの たねだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="40" rx="12" ry="15" fill="#c08f55"/><ellipse cx="27.6" cy="35" rx="4" ry="5.4" fill="#e0b478" opacity=".8" stroke="none"/><path d="M19 30a13 8.6 0 0 1 26 0z" fill="#8a5f38"/><path d="M20 26h24M19.6 29h24.8" stroke="#5a4a3c" stroke-width="1" opacity=".6"/><path d="M32 21.4v-5.4" stroke="#8a5f38" stroke-width="2.6" stroke-linecap="round"/></svg>`},
+{id:"o_matsubokkuri",nm:"まつぼっくり",r:1,tip:"まつぼっくりは まつの きの みだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 10c8.6 0 13.6 8.6 13.6 19.4S39 54 32 54s-13.6-13.8-13.6-24.6S23.4 10 32 10z" fill="#8a5f38"/><g stroke="#c08f55" stroke-width="2" fill="none" stroke-linecap="round"><path d="M21 26q11 7 22 0M20 34q12 7 24 0M22 42q10 6 20 0M24 18q8 5 16 0"/></g><path d="M32 10V5" stroke="#8a5f38" stroke-width="2.4" stroke-linecap="round"/></svg>`},
+{id:"o_kuri",nm:"くり",r:1,tip:"くりは とげとげの いがの なかに あるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 12c11.5 0 20.5 9.4 20.5 21 0 8.4-9 14-20.5 14S11.5 41.4 11.5 33c0-11.6 9-21 20.5-21z" fill="#8a5f38"/><path d="M32 12c11.5 0 20.5 9.4 20.5 21 0 3-1.2 5.6-3.2 7.6.6-13-6-23.8-17.3-28.6z" fill="#c08f55" opacity=".55" stroke="none"/><path d="M13.5 39c4.6 5 11 8 18.5 8s13.9-3 18.5-8c-1.6 8-9.4 12-18.5 12S15.1 47 13.5 39z" fill="#f2d7ae"/><path d="M32 12c-1.4-4-2.6-6-2.6-6s3.4.8 4.6 4.4z" fill="#8a5f38"/></svg>`},
+{id:"o_kinoko",nm:"きのこ",r:1,tip:"きのこは あめの あとに にょきにょき でるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 30c-4 0-7 3-7 8v13c0 3 3 5 7 5s7-2 7-5V38c0-5-3-8-7-8z" fill="#f6edda"/><path d="M12 30c0-11 9-20 20-20s20 9 20 20c0 4-9 6-20 6s-20-2-20-6z" fill="#d9584e"/><g fill="#fffcf4"><circle cx="22" cy="22" r="3.4"/><circle cx="40" cy="20" r="4"/><circle cx="32" cy="29" r="2.6"/><circle cx="46" cy="28" r="2.4"/></g></svg>`},
+{id:"o_minomushi",nm:"みのむし",r:2,tip:"みのむしは はっぱの おうちを きているよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 4v10" stroke="#8a5f38" stroke-width="1.6" stroke-linecap="round"/><path d="M32 14c8 0 14 8 14 20 0 14-6 22-14 22s-14-8-14-22c0-12 6-20 14-20z" fill="#c08f55"/><path d="M20 22l22 3" stroke="#8a5f38" stroke-width="2.2" stroke-linecap="round"/><path d="M23 28l18 -3" stroke="#8a5f38" stroke-width="2.2" stroke-linecap="round"/><path d="M20 34l22 3" stroke="#8a5f38" stroke-width="2.2" stroke-linecap="round"/><path d="M23 40l18 -3" stroke="#8a5f38" stroke-width="2.2" stroke-linecap="round"/><path d="M20 46l22 3" stroke="#8a5f38" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="38" cy="30" rx="7" ry="6" fill="#e0b478" transform="rotate(30 38 30)"/><ellipse cx="24" cy="42" rx="7" ry="5.4" fill="#f2d7ae" transform="rotate(-24 24 42)"/><circle cx="32" cy="18" r="6" fill="#5a4a3c"/><circle cx="29.8" cy="17.4" r="1.5" fill="#fffcf4" stroke="none" class="d"/><circle cx="34.2" cy="17.4" r="1.5" fill="#fffcf4" stroke="none" class="d"/><circle cx="29.8" cy="17.4" r=".8" fill="#2f2820" stroke="none"/><circle cx="34.2" cy="17.4" r=".8" fill="#2f2820" stroke="none"/></svg>`},
+{id:"o_risu",nm:"りす",r:1,tip:"りすは ふゆの ために たべものを かくすよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M43 53c11-1.4 16.4-9.6 13.4-18.6-2.2-6.6-9-8.6-12-4.6 5 .2 7 4.2 5.8 9.4-1.4 6.2-5.4 9.6-11.6 9.6z" fill="#e0b478"/><ellipse cx="30" cy="45" rx="11" ry="11.4" fill="#c08f55"/><ellipse cx="29" cy="47.6" rx="7" ry="7.6" fill="#f2d7ae"/><path d="M21.6 27.6c-1.4-4.6-.4-7 1.9-6.4 2.3.6 3 3.6 1.8 6.8z" fill="#c08f55"/><path d="M32.6 26.8c.8-4.6 2.4-6.4 4.4-5.4 2 1 1.2 3.8-.9 6.4z" fill="#c08f55"/><circle cx="28.6" cy="31.4" r="9" fill="#c08f55"/><ellipse cx="26.6" cy="34.6" rx="5" ry="3.8" fill="#f2d7ae"/><circle cx="24.8" cy="29.6" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="25.5" cy="28.9" r=".65" fill="#fffcf4" stroke="none" class="d"/><circle cx="32.4" cy="29.6" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="33.1" cy="28.9" r=".65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="26.6" cy="32.4" rx="1.7" ry="1.2" fill="#4a3a30" stroke="none"/><ellipse cx="21.4" cy="34.4" rx="2.3" ry="1.6" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="35.4" cy="34.4" rx="2.3" ry="1.6" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"o_harinezumi",nm:"はりねずみ",r:2,tip:"はりねずみの せなかは とげとげだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M44 48c-16 4-30-2-30-14 0-9 7-15 16-15 10 0 16 7 16 15" fill="#8a5f38"/><path d="M16 22l-3.4 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M21 23l-2.8 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M25 25l-2.2 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M30 26l-1.6 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M34 28l-1.0 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M39 26l-0.4 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M44 25l0.2 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M48 23l0.8 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M53 22l1.4 -8" stroke="#5a4a3c" stroke-width="2.4" stroke-linecap="round"/><path d="M14 36c0 7 8 12 18 12 6 0 11-2 14-5" fill="none" stroke="#5a4a3c" stroke-width="2" opacity=".5"/><path d="M44 34c6 0 10 4 10 8s-4 8-10 8c-5 0-9-3-9-8s4-8 9-8z" fill="#f2d7ae"/><path d="M54 42l5 1-5 2z" fill="#4a3a30" stroke="none"/><circle cx="48" cy="39" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="48.7" cy="38.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="42" cy="45" rx="2.3" ry="1.6" fill="#ee8fa6" opacity=".55" stroke="none"/><path d="M50 45q3 2 5 0" stroke="#8a5f38" stroke-width="1.2" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_fukurou",nm:"ふくろう",r:2,tip:"ふくろうは よるでも よく めが みえるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="36" rx="17" ry="19" fill="#c08f55"/><ellipse cx="32" cy="40" rx="11" ry="13" fill="#f2d7ae"/><path d="M18 20l2-8 7 5zM46 20l-2-8-7 5z" fill="#c08f55"/><circle cx="24" cy="29" r="7.4" fill="#fffcf4"/><circle cx="40" cy="29" r="7.4" fill="#fffcf4"/><circle cx="24" cy="29" r="3.6" fill="#4a3a30" stroke="none"/><circle cx="40" cy="29" r="3.6" fill="#4a3a30" stroke="none"/><circle cx="25.2" cy="27.6" r="1.2" fill="#fffcf4" stroke="none" class="d"/><circle cx="41.2" cy="27.6" r="1.2" fill="#fffcf4" stroke="none" class="d"/><path d="M32 33l-4 4h8z" fill="#f3c44e"/><path d="M16 46c3 4 7 6 8 6M48 46c-3 4-7 6-8 6" stroke="#8a5f38" stroke-width="1.4" fill="none" opacity=".6"/><path d="M26 55l-4 4h9zM38 55l4 4h-9z" fill="#f3c44e"/></svg>`},
+{id:"o_wataridori",nm:"わたりどり",r:2,tip:"とりは さむく なると みなみへ とんでいくよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M6 40c8-10 18-16 30-16 8 0 14 3 18 8-7-1-13 2-17 7-4-5-9-7-15-7-6 0-11 3-16 8z" fill="#5b96cc"/><path d="M22 26c8-6 16-8 24-6-6 0-13 3-19 8z" fill="#3d6ea8" opacity=".7" stroke="none"/><circle cx="48" cy="24" r="7" fill="#5b96cc"/><path d="M55 23l7 2-7 3z" fill="#f3c44e"/><circle cx="47" cy="22" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="47.7" cy="21.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><path d="M10 52c9-7 18-11 28-11" stroke="#d8e2ec" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/><circle cx="14" cy="18" r="3" fill="#d8e2ec"/><circle cx="24" cy="12" r="2.2" fill="#d8e2ec"/></svg>`},
+{id:"o_kamakiri",nm:"かまきり",r:2,tip:"かまきりの まえあしは かまの かたち",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M26 34c-6 2-11 6-13 12M38 34c6 2 11 6 13 12" stroke="#5da95f" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M27 40c-5 3-9 8-10 14M37 40c5 3 9 8 10 14" stroke="#5da95f" stroke-width="2.4" fill="none" stroke-linecap="round"/><ellipse cx="32" cy="40" rx="7" ry="17" fill="#7fc079"/><path d="M32 26c5 3 8 9 8 16 0 6-2 10-4 12 1-11-1-21-4-28z" fill="#5da95f" opacity=".5" stroke="none"/><path d="M22 27c-5-1-9-4-12-9 0 5 1 8 3 11-3 0-6 1-8 3 5 2 9 4 12 7 2-5 4-9 5-12z" fill="#c9e4a6"/><path d="M42 27c5-1 9-4 12-9 0 5-1 8-3 11 3 0 6 1 8 3-5 2-9 4-12 7-2-5-4-9-5-12z" fill="#c9e4a6"/><ellipse cx="32" cy="22" rx="8" ry="6.4" fill="#7fc079"/><path d="M27 17L18 6M37 17l9-11" stroke="#5da95f" stroke-width="1.7" stroke-linecap="round"/><ellipse cx="28" cy="21" rx="2.4" ry="3" fill="#4a3a30" stroke="none"/><ellipse cx="36" cy="21" rx="2.4" ry="3" fill="#4a3a30" stroke="none"/><circle cx="28.8" cy="20" r=".8" fill="#fffcf4" stroke="none" class="d"/><circle cx="36.8" cy="20" r=".8" fill="#fffcf4" stroke="none" class="d"/><path d="M29 26q3 2.2 6 0" stroke="#43904f" stroke-width="1.2" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_batta",nm:"バッタ",r:1,tip:"バッタは うしろあしで たかく とぶよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="34" cy="38" rx="17" ry="9" fill="#7fc079" transform="rotate(-8 34 38)"/><path d="M20 34c10-4 22-3 30 3-9 4-21 4-30-3z" fill="#c9e4a6"/><circle cx="18" cy="31" r="8" fill="#7fc079"/><path d="M14 25L6 14M20 24L16 12" stroke="#5da95f" stroke-width="1.7" stroke-linecap="round"/><ellipse cx="15.4" cy="29" rx="2.2" ry="2.8" fill="#4a3a30" stroke="none"/><circle cx="16" cy="28" r=".8" fill="#fffcf4" stroke="none" class="d"/><path d="M18 35q3.4 2.4 6 1" stroke="#5da95f" stroke-width="1.2" fill="none" stroke-linecap="round" class="d"/><path d="M34 42c2 8-2 12-2 12M42 42c3 7 0 12 0 12" stroke="#5da95f" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M40 30c8 0 14 5 15 12-5-1-9 0-12 3-2-6-3-11-3-15z" fill="#5da95f"/><path d="M43 45l12 8" stroke="#5da95f" stroke-width="3" stroke-linecap="round"/></svg>`},
+{id:"o_kitsune",nm:"きつね",r:2,tip:"きつねの しっぽは ふさふさ あたたかいよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M44 52c12-2 17-10 14-19-2-7-9-9-12-5 5 0 8 4 7 9-1 7-5 12-11 13z" fill="#ef9442"/><ellipse cx="30" cy="45" rx="12" ry="11" fill="#ef9442"/><ellipse cx="30" cy="48" rx="8" ry="7.4" fill="#fffcf4"/><path d="M20 22l-2-12 10 7zM40 22l2-12-10 7z" fill="#ef9442"/><path d="M21.4 21l-1-6.6 5.4 3.8zM38.6 21l1-6.6-5.4 3.8z" fill="#3c3542" stroke="none"/><path d="M30 20c9 0 15 6 15 13 0 5-7 8-15 8s-15-3-15-8c0-7 6-13 15-13z" fill="#ef9442"/><path d="M30 30c5 0 9 3 10 7-3 2-6 3-10 3s-7-1-10-3c1-4 5-7 10-7z" fill="#fffcf4"/><circle cx="24.6" cy="29" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="25.3" cy="28.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.4" cy="29" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="36.1" cy="28.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="30" cy="34" rx="2" ry="1.5" fill="#4a3a30" stroke="none"/><path d="M30 35.6c-1 1.5-2.4 1.5-3.4.6M30 35.6c1 1.5 2.4 1.5 3.4.6" stroke="#8a5f38" stroke-width="1.1" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_tanuki",nm:"たぬき",r:2,tip:"たぬきは めの まわりが くろいよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M47 52c10-3 13-10 11-16-2-6-8-7-10-3 5 1 6 5 5 9-1 5-3 8-8 10z" fill="#5a4a3c"/><path d="M50 44c3-2 4-5 3-8 2 4 1 7-3 8z" fill="#c08f55" opacity=".7" stroke="none"/><ellipse cx="30" cy="46" rx="13.5" ry="11" fill="#8a5f38"/><ellipse cx="30" cy="48.5" rx="9" ry="8" fill="#f2d7ae"/><circle cx="19" cy="23" r="5.6" fill="#5a4a3c"/><circle cx="41" cy="23" r="5.6" fill="#5a4a3c"/><circle cx="19" cy="23" r="2.8" fill="#c08f55"/><circle cx="41" cy="23" r="2.8" fill="#c08f55"/><circle cx="30" cy="32" r="11.5" fill="#8a5f38"/><path d="M19.6 27.6c1.6-3 4.6-4.4 7.4-3.4 2.8 1 4 4 3 7.2-1 3.2-4 4.8-7 3.8s-4.6-4.2-3.4-7.6z" fill="#3c3542" stroke="none"/><path d="M40.4 27.6c-1.6-3-4.6-4.4-7.4-3.4-2.8 1-4 4-3 7.2 1 3.2 4 4.8 7 3.8s4.6-4.2 3.4-7.6z" fill="#3c3542" stroke="none"/><ellipse cx="30" cy="38" rx="7.4" ry="5.4" fill="#f2d7ae"/><circle cx="25.4" cy="29.6" r="2" fill="#f6edda"/><circle cx="34.6" cy="29.6" r="2" fill="#f6edda"/><circle cx="25.4" cy="29.6" r="1.1" fill="#2f2820" stroke="none"/><circle cx="34.6" cy="29.6" r="1.1" fill="#2f2820" stroke="none"/><ellipse cx="30" cy="36" rx="2.4" ry="1.7" fill="#2f2820" stroke="none"/><path d="M30 37.8v1.6M30 39.4c-1.4 1.5-3 1.3-3.8 0M30 39.4c1.4 1.5 3 1.3 3.8 0" stroke="#5a4a3c" stroke-width="1.2" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_kuma",nm:"くま",r:1,tip:"くまは ふゆに ながい おひるねを するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><circle cx="21" cy="23" r="5.6" fill="#c08f55"/><circle cx="43" cy="23" r="5.6" fill="#c08f55"/><circle cx="21" cy="23" r="2.8" fill="#e0b478"/><circle cx="43" cy="23" r="2.8" fill="#e0b478"/><ellipse cx="32" cy="46" rx="13.5" ry="11" fill="#c08f55"/><ellipse cx="32" cy="48.5" rx="9" ry="8" fill="#f2d7ae"/><circle cx="32" cy="32" r="10.5" fill="#c08f55"/><ellipse cx="32" cy="36" rx="6.4" ry="4.8" fill="#f2d7ae"/><circle cx="28.4" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="29.1" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.6" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="36.3" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="24.6" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="39.4" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="32" cy="34" rx="2.2" ry="1.6" fill="#4a3a30" stroke="none"/><path d="M32 35.6v1.6M32 37.2c-1.3 1.4-2.8 1.2-3.6 0M32 37.2c1.3 1.4 2.8 1.2 3.6 0" stroke="#4a3a30" stroke-width="1.2" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_inoshishi",nm:"いのしし",r:3,tip:"いのししは はなで つちを ほるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="34" cy="42" rx="18" ry="13" fill="#8a5f38"/><path d="M22 50l-2 6M32 52l-1 5M42 50l2 6" stroke="#5a4a3c" stroke-width="3" stroke-linecap="round"/><path d="M50 38c5-2 8 0 8 0-2 4-5 6-8 6z" fill="#c08f55"/><circle cx="20" cy="34" r="12" fill="#8a5f38"/><path d="M13 24l-1-8 7 5zM29 24l2-8-7 5z" fill="#5a4a3c"/><ellipse cx="11" cy="38" rx="6" ry="5" fill="#f2d7ae"/><circle cx="9" cy="37" r="1.1" fill="#5a4a3c"/><circle cx="13" cy="38.4" r="1.1" fill="#5a4a3c"/><path d="M15 42c2-2 4-4 4-7" stroke="#fffcf4" stroke-width="2.4" stroke-linecap="round"/><circle cx="21" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="21.7" cy="31.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><path d="M40 34c3 3 6 4 10 4" stroke="#5a4a3c" stroke-width="1.6" fill="none" opacity=".5"/></svg>`},
+{id:"o_shika",nm:"しか",r:2,tip:"しかの つのは まいとし はえかわるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="46" rx="13" ry="10" fill="#e0b478"/><g fill="none" stroke="#8a5f38" stroke-width="2.8" stroke-linecap="round"><path d="M24 20c-3-5-4-9-4-12M24 15l-6-3M22 11l-1-6"/><path d="M40 20c3-5 4-9 4-12M40 15l6-3M42 11l1-6"/></g><ellipse cx="32" cy="30" rx="11" ry="12" fill="#e0b478"/><ellipse cx="18" cy="26" rx="5" ry="3.4" fill="#e0b478" transform="rotate(-24 18 26)"/><ellipse cx="46" cy="26" rx="5" ry="3.4" fill="#e0b478" transform="rotate(24 46 26)"/><ellipse cx="32" cy="36" rx="6" ry="4.6" fill="#f2d7ae"/><ellipse cx="32" cy="34" rx="2.2" ry="1.6" fill="#4a3a30" stroke="none"/><circle cx="27" cy="29" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="27.7" cy="28.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><circle cx="37" cy="29" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="37.7" cy="28.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><g fill="#fffcf4" opacity=".8" stroke="none"><circle cx="24" cy="46" r="1.6"/><circle cx="32" cy="49" r="1.6"/><circle cx="40" cy="46" r="1.6"/></g></svg>`},
+{id:"o_mogura",nm:"もぐら",r:2,tip:"もぐらは つちの なかで くらしているよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M4 46h56" stroke="#8a5f38" stroke-width="4" stroke-linecap="round" opacity=".5"/><path d="M8 46c4-10 12-16 24-16s20 6 24 16z" fill="#c08f55" opacity=".5" stroke="none"/><ellipse cx="32" cy="34" rx="13" ry="12" fill="#5a4a3c"/><ellipse cx="32" cy="38" rx="8" ry="7" fill="#8a5f38"/><path d="M32 26l-4 4h8z" fill="#ee8fa6"/><path d="M26 24q2 2 4 0M34 24q2 2 4 0" stroke="#2f2820" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/><path d="M28 32q4 3 8 0" stroke="#2f2820" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><path d="M18 38l-8 4 8 3M46 38l8 4-8 3" fill="#f2d7ae"/><ellipse cx="22" cy="30" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="42" cy="30" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"o_karasu",nm:"カラス",r:1,tip:"カラスは とても かしこい とりだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="34" cy="38" rx="17" ry="13" fill="#3c3542" stroke="none"/><path d="M34 34c9-3 15-1 17 4-5 5-12 5-17-4z" fill="#2f2820" stroke="none"/><path d="M50 42l12-4-5 11z" fill="#2f2820" stroke="none"/><circle cx="19" cy="28" r="9" fill="#3c3542" stroke="none"/><path d="M10 26l-8 2.6 8 3.4z" fill="#f3c44e"/><circle cx="18" cy="26" r="2.2" fill="#f9e3a0"/><circle cx="18" cy="26" r="1" fill="#2f2820" stroke="none"/><path d="M27 50l-2 6M37 50l2 6" stroke="#4a3a30" stroke-width="2.4" stroke-linecap="round"/></svg>`},
+{id:"o_nezumi",nm:"ねずみ",r:1,tip:"ねずみは まえばで かたい ものも かじるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M46 52c9 0 13-4 13-8" stroke="#c4aee0" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="20" cy="22" r="7.4" fill="#a9b3ba"/><circle cx="44" cy="22" r="7.4" fill="#a9b3ba"/><circle cx="20" cy="22" r="4.2" fill="#f9cdd8"/><circle cx="44" cy="22" r="4.2" fill="#f9cdd8"/><ellipse cx="32" cy="46" rx="13.5" ry="11" fill="#a9b3ba"/><ellipse cx="32" cy="48.5" rx="9" ry="8" fill="#e6dcc8"/><circle cx="32" cy="32" r="10.5" fill="#a9b3ba"/><circle cx="28.4" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="29.1" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><circle cx="35.6" cy="32" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="36.3" cy="31.3" r="0.65" fill="#fffcf4" stroke="none" class="d"/><ellipse cx="24.6" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="39.4" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="32" cy="35.4" rx="1.8" ry="1.3" fill="#ee8fa6"/><path d="M24 36l-6-1M24 38l-5 2M40 36l6-1M40 38l5 2" stroke="#c4aee0" stroke-width="1" stroke-linecap="round" class="d"/><path d="M32 37.5c-1 1.7-2.5 2.1-3.6 1.5M32 37.5c1 1.7 2.5 2.1 3.6 1.5" stroke="#8a5f38" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_mozu",nm:"もず",r:2,tip:"もずは たかい こえで ないて なわばりを しらせるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="38" rx="14" ry="15" fill="#c08f55"/><ellipse cx="32" cy="41" rx="9" ry="11" fill="#f2d7ae"/><circle cx="32" cy="22" r="10" fill="#c08f55"/><path d="M22 20c2-5 6-8 10-8s8 3 10 8c-4-3-16-3-20 0z" fill="#8a5f38"/><path d="M24 24h8" stroke="#5a4a3c" stroke-width="3" stroke-linecap="round"/><path d="M32 24l6 3-6 3z" fill="#4a3a30" stroke="none"/><circle cx="27" cy="21" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="27.7" cy="20.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><path d="M44 40l12 4-11 5z" fill="#8a5f38"/><path d="M27 52l-2 5M37 52l2 5" stroke="#f3c44e" stroke-width="2.4" stroke-linecap="round"/></svg>`},
+{id:"o_ringo",nm:"りんご",r:1,tip:"りんごは あかく なると あまくなるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="37" rx="15" ry="15" fill="#d9584e"/><ellipse cx="26.9" cy="31.6" rx="4.2" ry="3.0" fill="#ea7a6a" opacity=".55" transform="rotate(-28 26.9 31.6)" stroke="none"/><path d="M32 22v-6" stroke="#8a5f38" stroke-width="2.6" stroke-linecap="round"/><path d="M32 22c-1.6-2-1.6-4-1.6-4 2 .4 3.2 1.6 3.6 3z" fill="#5da95f"/></svg>`},
+{id:"o_kaki",nm:"かき",r:1,tip:"かきは あきに オレンジ色に なるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="38" rx="16" ry="14" fill="#ef9442"/><ellipse cx="25" cy="32" rx="4.4" ry="3" fill="#f7a95a" opacity=".6" transform="rotate(-28 25 32)" stroke="none"/><path d="M32 24l8-4-2 5 6-1-5 4 5 2-6 1 2 4-8-3-8 3 2-4-6-1 5-2-5-4 6 1-2-5z" fill="#5da95f"/><path d="M32 22v-5" stroke="#8a5f38" stroke-width="2.4" stroke-linecap="round"/></svg>`},
+{id:"o_satsumaimo",nm:"さつまいも",r:1,tip:"さつまいもは つちの なかで そだつよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M9 45c-4-8 3-20 15-27s24-6 29 0c4 5-1 15-14 22S13 53 9 45z" fill="#a482c9"/><path d="M14 44c-2-5 4-13 13-18s19-6 23-3c-6-2-14 0-21 4S15 39 14 44z" fill="#c4aee0" opacity=".65" stroke="none"/><path d="M53 18c3-2 5-2 5-2M9 45c-3 1-5 3-5 3" stroke="#8a5f38" stroke-width="2.2" fill="none" stroke-linecap="round"/><g fill="#8a5f38" opacity=".5" stroke="none"><circle cx="28" cy="32" r="1.2"/><circle cx="36" cy="27" r="1.2"/><circle cx="20" cy="39" r="1.2"/></g></svg>`},
+{id:"o_yakiimo",nm:"やきいも",r:2,tip:"ほかほかの やきいもは あきの ごちそう",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M10 42c-2-6 4-14 14-19s22-5 26-1c3 4-2 12-13 18S12 48 10 42z" fill="#a482c9"/><path d="M14 36c6 4 16 3 24-2" stroke="#8a8090" stroke-width="1.2" opacity=".5"/><path d="M8 44c6 8 22 8 36-2 4 6-4 14-18 16S5 52 8 44z" fill="#c4aee0"/><path d="M8 44c6 8 22 8 36-2 1 1.6 1 3.4.4 5.4-12 9-27 8-34 2z" fill="#eef2f6"/><path d="M18 16c-2-4 0-7 0-7 3 3 3 6 2 8zM28 12c-2-4 0-7 0-7 3 3 3 6 2 8z" fill="#d8e2ec" opacity=".8" stroke="none"/></svg>`},
+{id:"o_sanma",nm:"さんま",r:2,tip:"さんまは あきに おいしい おさかな",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M4 34c8-9 20-13 34-13 12 0 20 5 20 10s-8 10-20 10c-14 0-26-4-34-7z" fill="#a9b3ba"/><path d="M4 34c8-9 20-13 34-13 12 0 20 5 20 10-6-6-16-9-28-9-10 0-19 5-26 12z" fill="#d8e2ec"/><path d="M8 32c10-5 22-7 34-6" stroke="#8fa6dd" stroke-width="1.2" opacity=".6"/><path d="M58 31l6-8v22l-6-8z" fill="#8fa6dd"/><path d="M30 42c2 5 6 7 6 7-5 0-9-3-11-6z" fill="#8fa6dd"/><circle cx="14" cy="31" r="2.6" fill="#fffcf4"/><circle cx="13.6" cy="31" r="1.3" fill="#2f2820" stroke="none"/><path d="M8 37q4 2 7 1" stroke="#8fa6dd" stroke-width="1.4" fill="none" stroke-linecap="round" class="d"/></svg>`},
+{id:"o_kurumi",nm:"くるみ",r:2,tip:"くるみは かたい からを わって たべるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="36" rx="17" ry="16" fill="#c08f55"/><path d="M32 20v32" stroke="#8a5f38" stroke-width="2"/><path d="M32 24c-6 2-9 6-9 10s3 8 9 10M32 24c6 2 9 6 9 10s-3 8-9 10" stroke="#8a5f38" stroke-width="1.6" fill="none"/><path d="M24 28c-3 3-4 6-4 8M40 28c3 3 4 6 4 8" stroke="#8a5f38" stroke-width="1.4" fill="none" class="d"/><ellipse cx="25" cy="28" rx="3.6" ry="2.4" fill="#e0b478" opacity=".55" transform="rotate(-30 25 28)" stroke="none"/></svg>`},
+{id:"o_ginnan",nm:"ぎんなん",r:3,tip:"ぎんなんは いちょうの きの みだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M44 26c-8 0-13-3-13-8 0-7 5-12 13-12s13 5 13 12c0 5-5 8-13 8z" fill="#f3c44e"/><path d="M44 6v20" stroke="#e0a92e" stroke-width="1.1" opacity=".6"/><path d="M38 8c-1 6-1 12 0 16M50 8c1 6 1 12 0 16" stroke="#e0a92e" stroke-width="1" opacity=".5"/><path d="M44 26v8" stroke="#c08f55" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="22" cy="40" rx="11" ry="13" fill="#f9e3a0"/><ellipse cx="18.6" cy="34.6" rx="3.4" ry="4.4" fill="#fffcf4" opacity=".75" stroke="none"/><path d="M22 27v-4" stroke="#c08f55" stroke-width="2.2" stroke-linecap="round"/><ellipse cx="41" cy="46" rx="8.6" ry="10" fill="#f2d7ae"/><ellipse cx="38.4" cy="42" rx="2.6" ry="3.4" fill="#fffcf4" opacity=".7" stroke="none"/><path d="M41 36v-3" stroke="#c08f55" stroke-width="2" stroke-linecap="round"/></svg>`},
+{id:"o_toumorokoshi",nm:"とうもろこし",r:1,tip:"とうもろこしの つぶは たねなんだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 10c9 0 15 9 15 22s-6 22-15 22-15-9-15-22S23 10 32 10z" fill="#f3c44e"/><path d="M24 20v24" stroke="#e0a92e" stroke-width="1.2" opacity=".65"/><path d="M28 20v24" stroke="#e0a92e" stroke-width="1.2" opacity=".65"/><path d="M32 20v24" stroke="#e0a92e" stroke-width="1.2" opacity=".65"/><path d="M36 20v24" stroke="#e0a92e" stroke-width="1.2" opacity=".65"/><path d="M40 20v24" stroke="#e0a92e" stroke-width="1.2" opacity=".65"/><path d="M18 20h28" stroke="#e0a92e" stroke-width="1.2" opacity=".55"/><path d="M18 26h28" stroke="#e0a92e" stroke-width="1.2" opacity=".55"/><path d="M18 32h28" stroke="#e0a92e" stroke-width="1.2" opacity=".55"/><path d="M18 38h28" stroke="#e0a92e" stroke-width="1.2" opacity=".55"/><path d="M18 44h28" stroke="#e0a92e" stroke-width="1.2" opacity=".55"/><path d="M17 28C9 26 5 34 6 44c6-2 10-7 12-13zM47 28c8-2 12 6 11 16-6-2-10-7-12-13z" fill="#5da95f"/><path d="M32 10c1-4 3-6 3-6" stroke="#c08f55" stroke-width="2" stroke-linecap="round"/></svg>`},
+{id:"o_onigiri",nm:"おにぎり",r:1,tip:"おにぎりは おこめで つくるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 12c3 0 5 2 7 5l14 26c2 4 0 9-5 9H16c-5 0-7-5-5-9l14-26c2-3 4-5 7-5z" fill="#fffcf4"/><path d="M32 12c3 0 5 2 7 5l14 26c2 4 0 9-5 9h-6c4-1 5-5 3-9L32 14z" fill="#f6edda" opacity=".7" stroke="none"/><path d="M20 38h24v14H20z" fill="#3c3542" stroke="none"/><circle cx="26" cy="30" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="26.7" cy="29.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><circle cx="38" cy="30" r="1.9" fill="#4a3a30" stroke="none"/><circle cx="38.7" cy="29.3" r=".65" fill="#fffcf4" stroke="none" class="d"/><path d="M29 34q3 2.4 6 0" stroke="#8a5f38" stroke-width="1.3" fill="none" stroke-linecap="round" class="d"/><ellipse cx="21.6" cy="33" rx="2.4" ry="1.7" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="42.4" cy="33" rx="2.4" ry="1.7" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"o_applepie",nm:"アップルパイ",r:3,tip:"りんごを やくと あまい においが するよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M8 36h48c0 12-8 18-24 18S8 48 8 36z" fill="#e0b478"/><path d="M8 36h48c0 3-.6 6-1.8 8.6-12 4-32 4-44.4 0C8.6 42 8 39 8 36z" fill="#f2d7ae"/><path d="M12 36c0-11 9-18 20-18s20 7 20 18z" fill="#f3c44e"/><g stroke="#c08f55" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M22 20c2 6 3 11 3 16M32 18v18M42 20c-2 6-3 11-3 16M14 30h36"/></g><path d="M30 14c1-4 4-6 4-6 1 4-1 6-4 6z" fill="#5da95f"/><path d="M18 12c-1-3 0-5 0-5 2 2 2 4 1 5zM26 8c-1-3 0-5 0-5 2 2 2 4 1 5z" fill="#d8e2ec" opacity=".8" stroke="none"/></svg>`},
+{id:"o_mikan",nm:"みかん",r:1,tip:"みかんは かわを むいて たべるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="38" rx="17" ry="14" fill="#ef9442"/><ellipse cx="25" cy="32" rx="4.6" ry="3" fill="#f7a95a" opacity=".6" transform="rotate(-28 25 32)" stroke="none"/><circle cx="32" cy="24" r="3.4" fill="#5da95f"/><path d="M32 24c6-4 11-3 11-3-1 5-6 6-11 5z" fill="#5da95f"/><g fill="#d4741c" opacity=".35" stroke="none" class="d"><circle cx="24" cy="44" r="1"/><circle cx="34" cy="46" r="1"/><circle cx="40" cy="40" r="1"/></g></svg>`},
+{id:"o_kabochapudding",nm:"かぼちゃプリン",r:3,tip:"かぼちゃは あまくて おかしにも なるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M14 26h36l-5 26c-.6 3-6 5-13 5s-12.4-2-13-5z" fill="#ef9442"/><ellipse cx="32" cy="26" rx="18" ry="6" fill="#f7a95a"/><path d="M32 20c6 0 11 2 13 4-3 6-8 9-13 9s-10-3-13-9c2-2 7-4 13-4z" fill="#8a5f38"/><path d="M32 20c-4-2-6-6-6-6 5 0 8 2 9 5z" fill="#c08f55"/><path d="M24 46q8 5 16 0" stroke="#d4741c" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".6"/><circle cx="32" cy="16" r="3.4" fill="#d9584e"/></svg>`},
+{id:"o_takibi",nm:"たきび",r:2,tip:"おちばを あつめて あたたまるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 8c6 8 9 14 9 19 0 3-1 5-3 7 5-1 8-4 9-9 4 6 5 11 5 16 0 6-3 11-8 14H21c-5-3-8-8-8-14 0-9 7-19 19-33z" fill="#ef9442"/><path d="M32 24c5 6 7 11 7 15 0 6-3 11-7 13s-7-7-7-13c0-4 2-9 7-15z" fill="#f3c44e"/><path d="M32 34c2 3 3 6 3 8 0 3-1 5-3 6s-3-3-3-6c0-2 1-5 3-8z" fill="#f9e3a0"/><path d="M6 52l22-8 2 5z" fill="#8a5f38"/><path d="M58 52l-22-8-2 5z" fill="#8a5f38"/><path d="M8 56h48" stroke="#c08f55" stroke-width="3.4" stroke-linecap="round"/><path d="M12 50l18 6M52 50l-18 6" stroke="#8a5f38" stroke-width="4.4" stroke-linecap="round"/><circle cx="12" cy="22" r="2.2" fill="#f9e3a0" opacity=".85" stroke="none"/><circle cx="52" cy="18" r="1.7" fill="#f9e3a0" opacity=".8" stroke="none"/><circle cx="48" cy="32" r="1.4" fill="#f9e3a0" opacity=".7" stroke="none"/><circle cx="16" cy="34" r="1.3" fill="#f9e3a0" opacity=".65" stroke="none"/></svg>`},
+{id:"o_budoupan",nm:"ぶどう",r:1,tip:"ぶどうは あきに あまく じゅくすよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M32 13c-2-4-6-5.6-6-5.6" stroke="#5da95f" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M32 12c4-4 9-4 9-4 0 4-4 6-9 6z" fill="#5da95f"/><g fill="#a482c9"><circle cx="32" cy="21" r="6.2"/><circle cx="24" cy="29" r="6.2"/><circle cx="40" cy="29" r="6.2"/><circle cx="32" cy="33" r="6.2"/><circle cx="24" cy="41" r="6.2"/><circle cx="40" cy="41" r="6.2"/><circle cx="32" cy="45" r="6.2"/></g><circle cx="30" cy="19" r="1.9" fill="#c4aee0"/><circle cx="22" cy="27" r="1.6" fill="#c4aee0"/></svg>`},
+{id:"o_hachimaki",nm:"うんどうかい",r:1,tip:"はしったり とんだり からだを うごかそう",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><circle cx="32" cy="30" r="15" fill="#f2d7ae"/><path d="M17 26c1-9 7-14 15-14s14 5 15 14c-4-5-10-4-15-4s-11-1-15 4z" fill="#3c3542" stroke="none"/><path d="M14 26h36v6H14z" fill="#d9584e"/><path d="M14 29l-9 6 4 2zM50 29l9 6-4 2z" fill="#d9584e"/><circle cx="26" cy="32" r="2" fill="#4a3a30" stroke="none"/><circle cx="38" cy="32" r="2" fill="#4a3a30" stroke="none"/><path d="M27 38q5 4 10 0" stroke="#8a5f38" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M13 56c0-8 8-12 19-12s19 4 19 12z" fill="#5b96cc"/><ellipse cx="22" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/><ellipse cx="42" cy="36" rx="2.5" ry="1.8" fill="#ee8fa6" opacity=".55" stroke="none"/></svg>`},
+{id:"o_trophy",nm:"トロフィー",r:3,tip:"がんばった人が もらえる かがやく カップ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M20 10h24v14c0 7-5 12-12 12s-12-5-12-12z" fill="#f3c44e"/><path d="M20 14h-6c0 7 3 11 7 12M44 14h6c0 7-3 11-7 12" stroke="#e0a92e" stroke-width="3" fill="none"/><path d="M29 36h6v8h-6z" fill="#e0a92e"/><path d="M20 44h24l2 8H18z" fill="#c08f55"/><path d="M15 52h34v5H15z" fill="#8a5f38"/><path d="M32 15l1.8 4.4 4.6.4-3.6 3 1.2 4.6-4-2.6-4 2.6 1.2-4.6-3.6-3 4.6-.4z" fill="#fffcf4"/></svg>`},
+{id:"o_medal",nm:"メダル",r:2,tip:"1ばんは きんいろの メダルだよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><path d="M22 8l10 22-10 4z" fill="#5b96cc"/><path d="M42 8l-10 22 10 4z" fill="#d9584e"/><circle cx="32" cy="42" r="17" fill="#f3c44e"/><circle cx="32" cy="42" r="12.4" fill="#f9e3a0"/><path d="M32 33l2.6 6.4 6.8.5-5.2 4.4 1.6 6.7-5.8-3.7-5.8 3.7 1.6-6.7-5.2-4.4 6.8-.5z" fill="#e0a92e"/></svg>`},
+{id:"o_tamaire",nm:"たまいれ",r:2,tip:"かごに たまを たくさん いれよう",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 50V14" stroke="#c08f55" stroke-width="4" stroke-linecap="round"/><path d="M16 14h32l-4 12H20z" fill="#d9584e"/><path d="M16 14h32l-1.4 4H17.4z" fill="#ea7a6a"/><circle cx="20" cy="36" r="5" fill="#f3c44e"/><circle cx="44" cy="34" r="5" fill="#5b96cc"/><circle cx="14" cy="46" r="4.4" fill="#a482c9"/><circle cx="50" cy="44" r="4.4" fill="#5da95f"/><circle cx="24" cy="50" r="4" fill="#ee8fa6"/><circle cx="42" cy="52" r="4" fill="#ef9442"/><path d="M8 56h48" stroke="#c08f55" stroke-width="3" stroke-linecap="round"/></svg>`},
+{id:"o_baton",nm:"バトン",r:1,tip:"リレーで つぎの ひとに わたすよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><g transform="rotate(-30 32 32)"><rect x="10" y="26" width="44" height="12" rx="6" fill="#d9584e"/><rect x="10" y="26" width="44" height="5" rx="2.5" fill="#ea7a6a"/><rect x="20" y="26" width="5" height="12" fill="#fffcf4"/><rect x="39" y="26" width="5" height="12" fill="#fffcf4"/></g></svg>`},
+{id:"o_ryukku",nm:"えんそくリュック",r:1,tip:"えんそくの じゅんびは できたかな",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="19" ry="2.6" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M18 20c0-6 6-10 14-10s14 4 14 10v28c0 4-3 6-7 6H25c-4 0-7-2-7-6z" fill="#5da95f"/><path d="M18 26c0-6 6-10 14-10s14 4 14 10v6H18z" fill="#7fc079"/><path d="M22 36h20v12H22z" fill="#43904f"/><rect x="29" y="38" width="6" height="6" rx="1.6" fill="#f3c44e"/><path d="M22 18V12c0-3 2-5 5-5M42 18V12c0-3-2-5-5-5" stroke="#43904f" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M18 30h28" stroke="#43904f" stroke-width="2"/></svg>`},
+{id:"o_obento",nm:"おべんとう",r:2,tip:"おべんとうを あけるのは たのしいね",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><rect x="8" y="22" width="48" height="30" rx="5" fill="#d9584e"/><rect x="11" y="25" width="42" height="24" rx="3" fill="#fffcf4"/><path d="M14 28h16v18H14z" fill="#f6edda"/><circle cx="22" cy="34" r="4.4" fill="#d9584e"/><path d="M33 28h8v8h-8z" fill="#f3c44e"/><path d="M43 28h8v8h-8z" fill="#5da95f"/><path d="M33 38h8v8h-8z" fill="#ef9442"/><path d="M43 38h8v8h-8z" fill="#ee8fa6"/><rect x="6" y="20" width="52" height="5" rx="2.5" fill="#b8402f"/></svg>`},
+{id:"o_suitou",nm:"すいとう",r:1,tip:"うんどうの あとは おみずを のもうね",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><rect x="20" y="18" width="24" height="36" rx="7" fill="#5b96cc"/><rect x="20" y="18" width="24" height="10" rx="5" fill="#3d6ea8"/><rect x="26" y="8" width="12" height="11" rx="3" fill="#41526a"/><rect x="23" y="32" width="18" height="12" rx="2" fill="#fffcf4"/><path d="M32 34c3 3 4.6 5.4 4.6 7.2 0 2.2-2 3.8-4.6 3.8s-4.6-1.6-4.6-3.8c0-1.8 1.6-4.2 4.6-7.2z" fill="#8fa6dd"/><path d="M44 26c6 2 8 6 8 10s-2 8-8 10" stroke="#41526a" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`},
+{id:"o_hon",nm:"ほん",r:1,tip:"あきは ほんを よむのに ぴったりの きせつ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><path d="M32 18c-6-4-14-5-22-4v32c8-1 16 0 22 4z" fill="#d9584e"/><path d="M32 18c6-4 14-5 22-4v32c-8-1-16 0-22 4z" fill="#ea7a6a"/><path d="M32 18c-5-3-11-4-18-3.6v26c7-.4 13 .6 18 3.6z" fill="#fffcf4"/><path d="M32 18c5-3 11-4 18-3.6v26c-7-.4-13 .6-18 3.6z" fill="#f6edda"/><g stroke="#d8e2ec" stroke-width="1.4" stroke-linecap="round" class="d"><path d="M19 22h9M19 27h9M19 32h7M36 22h9M36 27h9M36 32h7"/></g><path d="M32 18v32" stroke="#b8402f" stroke-width="2.4"/></svg>`},
+{id:"o_dongurikoma",nm:"どんぐりごま",r:2,tip:"どんぐりに ぼうを さすと こまに なるよ",svg:`<svg viewBox="0 0 64 64" stroke="#5a4a3c" stroke-width="1.15" stroke-linejoin="round" stroke-linecap="round"><ellipse cx="32" cy="57" rx="15" ry="2.4" fill="#5a4a3c" opacity=".12" stroke="none" class="d"/><ellipse cx="32" cy="52" rx="13" ry="3" fill="#5a4a3c" opacity=".18" stroke="none" class="d"/><path d="M32 4v14" stroke="#c08f55" stroke-width="3.4" stroke-linecap="round"/><ellipse cx="32" cy="34" rx="13" ry="16" fill="#c08f55"/><ellipse cx="27.6" cy="28" rx="4" ry="5.4" fill="#e0b478" opacity=".8" stroke="none"/><path d="M19 22a13 8.6 0 0 1 26 0z" fill="#8a5f38"/><path d="M20 18h24M19.6 21h24.8" stroke="#5a4a3c" stroke-width="1" opacity=".6"/><path d="M32 50v-2" stroke="#8a5f38" stroke-width="3" stroke-linecap="round"/><path d="M48 14c4 2 6 6 5 10M16 14c-4 2-6 6-5 10" stroke="#c08f55" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/></svg>`}
+]
+};
+const MONTHTHEME={9:"おつきみと あきの はじまり",10:"ハロウィンと あきの みのり"};
 
 /* ===== しゅくじつ ===== */
 function nthMon(y,m,n){const d=new Date(y,m-1,1);return 1+((8-d.getDay())%7)+(n-1)*7;}
@@ -936,6 +1164,7 @@ function render(){
   });
   cntVal=cnt;
   justPlaced=null;justSpark=false;
+  updateGachaBtn();
   renderStrip();
   renderSide();
 }
@@ -1053,6 +1282,225 @@ function onCell(d){
   if(planEdit){openDay(d);return;}
   if(!held){hintStrip();return;}
   place(d);
+}
+
+
+/* ===== ガチャ（月ごと・おなじ子は でない） ===== */
+const CAPSULE_COLORS=["#e8566e","#5b96cc","#5da95f","#f3c44e","#a482c9","#ef9442"];
+const FIRST_YM=[2026,9];
+let gBusy=false, gTimer=null, dexPick=null, dexY=0, dexM=0;
+
+const ymKey=(y,m)=>y+"-"+m;
+const monthSet=m=>MONTHCHARS[m]||[];
+function dexAll(){S.dex=S.dex||{};S.dex[current]=S.dex[current]||{};return S.dex[current];}
+function dexOf(y,m){const d=dexAll();const k=ymKey(y,m);d[k]=d[k]||{};return d[k];}
+function charOf(m,id){return monthSet(m).find(c=>c.id===id);}
+
+/* --- まわせる かいすう（あさ1・よる1） --- */
+function slotNow(){return new Date().getHours()>=NIGHT_FROM?"pm":"am";}
+function pullLog(){S.pull=S.pull||{};S.pull[current]=S.pull[current]||{};return S.pull[current];}
+function pullsToday(){const l=pullLog();return l[key(new Date())]||{};}
+function canPull(){
+  const t=new Date();
+  if(!monthSet(t.getMonth()+1).length)return "none";
+  const d=dexOf(t.getFullYear(),t.getMonth()+1);
+  if(monthSet(t.getMonth()+1).every(c=>d[c.id]))return "done";
+  return pullsToday()[slotNow()]?"used":"ok";
+}
+function usePull(){
+  const l=pullLog(), k=key(new Date());
+  l[k]=l[k]||{};l[k][slotNow()]=1;
+}
+function pickChar(){
+  const t=new Date(), m=t.getMonth()+1;
+  const d=dexOf(t.getFullYear(),m);
+  const rest=monthSet(m).filter(c=>!d[c.id]);
+  if(!rest.length)return null;
+  const w={1:6,2:3,3:1};
+  let total=0;rest.forEach(c=>total+=w[c.r]);
+  let x=Math.random()*total;
+  for(const c of rest){x-=w[c.r];if(x<=0)return c;}
+  return rest[0];
+}
+
+function capsuleSVG(c1,c2){
+  return `<svg viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="44" fill="${c2}"/>
+    <path d="M6 50a44 44 0 0 1 88 0z" fill="${c1}"/>
+    <path d="M6 50h88" stroke="#fffcf4" stroke-width="5"/>
+    <ellipse cx="34" cy="30" rx="13" ry="8" fill="#fffcf4" opacity=".45" transform="rotate(-24 34 30)"/>
+    <circle cx="50" cy="50" r="44" fill="none" stroke="rgba(90,74,60,.35)" stroke-width="2.5"/>
+  </svg>`;
+}
+function machineSVG(){
+  return `<svg class="gmachine" viewBox="0 0 120 150">
+    <rect x="12" y="74" width="96" height="64" rx="10" fill="#d9584e"/>
+    <rect x="12" y="74" width="96" height="10" rx="5" fill="#ea7a6a"/>
+    <circle cx="60" cy="42" r="40" fill="#eef2f6" opacity=".92"/>
+    <circle cx="60" cy="42" r="40" fill="none" stroke="#b9c8d6" stroke-width="3"/>
+    <circle cx="46" cy="34" r="10" fill="#e8566e"/><circle cx="72" cy="30" r="10" fill="#5b96cc"/>
+    <circle cx="60" cy="52" r="10" fill="#f3c44e"/><circle cx="38" cy="54" r="9" fill="#5da95f"/>
+    <circle cx="80" cy="52" r="9" fill="#a482c9"/><circle cx="60" cy="18" r="8" fill="#ef9442"/>
+    <ellipse cx="46" cy="26" rx="9" ry="5" fill="#fffcf4" opacity=".4" transform="rotate(-24 46 26)"/>
+    <circle cx="60" cy="98" r="13" fill="#f3c44e" stroke="#c9963a" stroke-width="3"/>
+    <rect x="57" y="90" width="6" height="16" rx="3" fill="#8a5f38"/>
+    <rect x="34" y="116" width="52" height="18" rx="5" fill="#8a5f38"/>
+    <rect x="38" y="120" width="44" height="12" rx="3" fill="#41526a"/>
+  </svg>`;
+}
+
+function updateGachaBtn(){
+  const b=document.getElementById("gachaBtn");if(!b)return;
+  const st=canPull();
+  b.classList.toggle("ready",st==="ok");
+  b.classList.toggle("off",st!=="ok");
+  b.textContent=st==="ok"?"🎁 ガチャ":(st==="done"?"🎁 コンプ！":"🎁 ガチャ");
+}
+function gachaOpen(){
+  const t=new Date(), m=t.getMonth()+1;
+  const st=document.getElementById("gstage"), rs=document.getElementById("gresult");
+  document.getElementById("gAgain").style.display="none";
+  st.classList.remove("rolling");
+  rs.innerHTML="";rs.style.animation="none";
+  const d=dexOf(t.getFullYear(),m), set=monthSet(m);
+  const got=set.filter(c=>d[c.id]).length;
+  document.getElementById("gTitle").innerHTML=
+    set.length?`${m}月の ガチャ<span class="gcount">${got} / ${set.length}</span>`
+              :`${m}月の ガチャ`;
+  const state=canPull();
+  if(state==="none"){
+    st.innerHTML=`<div class="gmsg">🛠<div>${m}月の ガチャは<br>じゅんびちゅうです</div></div>`;
+  }else if(state==="done"){
+    st.innerHTML=`<div class="gmsg done">🎉<div>${m}月の なかまを<br>ぜんぶ あつめたよ！</div></div>`;
+  }else if(state==="used"){
+    const msg=slotNow()==="am"?"あさの ガチャは まわしたよ<br>よるに また あえるね"
+                              :"きょうの ガチャは おしまい<br>あしたの あさ また まわそう";
+    st.innerHTML=`<div class="gmsg wait">⏳<div>${msg}</div></div>`;
+  }else{
+    const lbl=slotNow()==="am"?"あさの ガチャ":"よるの ガチャ";
+    st.innerHTML=`<div>${machineSVG()}<div style="margin-top:10px">`+
+      `<button class="gstart" id="gStart">${lbl}を まわす！</button></div></div>`;
+    st.querySelector(".gmachine").style.animation="none";
+    document.getElementById("gStart").onclick=gachaRoll;
+  }
+  openPanel("gachaPanel");
+}
+
+function gachaRoll(){
+  if(gBusy)return;
+  if(canPull()!=="ok"){gachaOpen();return;}
+  gBusy=true;usePull();
+  const st=document.getElementById("gstage"), rs=document.getElementById("gresult");
+  const t=new Date(), m=t.getMonth()+1;
+  const c=pickChar();
+  if(!c){gBusy=false;gachaOpen();return;}
+  const c1=CAPSULE_COLORS[Math.floor(Math.random()*CAPSULE_COLORS.length)];
+  const c2=CAPSULE_COLORS[Math.floor(Math.random()*CAPSULE_COLORS.length)];
+  const cap=capsuleSVG(c1,c2);
+  rs.innerHTML="";rs.style.animation="none";
+  document.getElementById("gAgain").style.display="none";
+  st.classList.add("rolling");
+  st.innerHTML=machineSVG()+
+    `<div class="gcap"><div class="half top">${cap}</div><div class="half bot">${cap}</div></div>`+
+    `<div class="gchar" style="opacity:0">${c.svg}</div>`;
+  gachaSound();
+  clearTimeout(gTimer);
+  gTimer=setTimeout(()=>{
+    const ch=st.querySelector(".gchar");if(ch)ch.style.opacity="";
+    const ring=document.createElement("div");ring.className="gring";st.appendChild(ring);
+    const cols=["#f0b429","#ffd84d","#fff3b0","#e8566e","#6ec6e8","#7fc079","#fffdf8","#a482c9"];
+    const n=(c.r===3)?70:(c.r===2)?46:32;
+    for(let i=0;i<n;i++){
+      const p=document.createElement("i");p.className="gs"+(i%3===0?" sq":"");
+      p.style.cssText=`--a:${Math.round(Math.random()*360)}deg;--d:${Math.round(110+Math.random()*250)}px;`+
+        `--s:${Math.round(8+Math.random()*15)}px;--c:${cols[i%cols.length]};`+
+        `--t:${(2.45+Math.random()*.5).toFixed(2)}s;--rot:${Math.round(Math.random()*720-360)}deg`;
+      st.appendChild(p);
+    }
+    const d=dexOf(t.getFullYear(),m);
+    d[c.id]=1;save();
+    const set=monthSet(m), got=set.filter(x=>d[x.id]).length;
+    const rare=c.r===3?"★★★ レア":(c.r===2?"★★":"★");
+    rs.innerHTML=`<div class="gnm">${esc(c.nm)}<span class="gbadge nw">はじめまして！</span></div>`+
+      `<div class="grare">${rare}</div>`+
+      `<div class="gtip">${esc(c.tip)}</div>`+
+      `<div class="gprog">${m}月の なかま ${got} / ${set.length}</div>`;
+    rs.style.animation="gfade .45s ease-out both";
+    document.getElementById("gTitle").innerHTML=
+      `${m}月の ガチャ<span class="gcount">${got} / ${set.length}</span>`;
+    setTimeout(()=>{
+      const again=document.getElementById("gAgain");
+      if(canPull()==="ok"){again.textContent="もう いちど";again.style.display="";}
+      else if(got>=set.length){again.textContent="🎉 コンプリート！";again.style.display="";again.disabled=true;}
+      gBusy=false;
+    },900);
+    updateGachaBtn();
+  },2450);
+}
+
+function gachaSound(){
+  if(S.sound===false)return;
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    if(actx.state==="suspended")actx.resume();
+    const t0=actx.currentTime+0.02;
+    const note=(f,dt,dur,type,vol)=>{
+      const o=actx.createOscillator(),g=actx.createGain();
+      o.type=type||"triangle";o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t0+dt);
+      g.gain.exponentialRampToValueAtTime(vol||.2,t0+dt+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,t0+dt+dur);
+      o.connect(g);g.connect(actx.destination);
+      o.start(t0+dt);o.stop(t0+dt+dur+.05);
+    };
+    for(let i=0;i<14;i++)note(240+Math.random()*260,i*.075,.09,"square",.05);
+    note(660,1.55,.12,"sine",.14);note(440,1.72,.16,"sine",.13);
+    note(880,2.2,.1,"square",.12);note(1320,2.28,.14,"sine",.12);
+    const C5=523.25,E5=659.25,G5=783.99,C6=1046.5,E6=1318.51,G6=1568;
+    [[2.45,C5],[2.58,E5],[2.71,G5]].forEach(([dt,f])=>{note(f,dt,.35);note(f*2,dt,.25,"sine",.06);});
+    note(C6,2.86,.5);[C6,E6,G6].forEach((f,i)=>note(f,3.2,1.1,"triangle",.17-i*.03));
+    note(130.81,2.45,.7,"sine",.15);note(130.81,3.2,1.2,"sine",.16);
+    for(let i=0;i<16;i++)note(1800+Math.random()*1800,2.6+i*.09,.26,"sine",.055);
+  }catch(e){}
+}
+
+/* ===== ずかん（月ごと） ===== */
+function dexShift(n){
+  let y=dexY, m=dexM+n;
+  if(m<1){m=12;y--;}
+  if(m>12){m=1;y++;}
+  const t=new Date();
+  if(y<FIRST_YM[0]||(y===FIRST_YM[0]&&m<FIRST_YM[1]))return;
+  if(y>t.getFullYear()||(y===t.getFullYear()&&m>t.getMonth()+1))return;
+  dexY=y;dexM=m;dexPick=null;dexOpen();
+}
+function dexOpen(){
+  if(!dexM){const t=new Date();dexY=t.getFullYear();dexM=t.getMonth()+1;}
+  const set=monthSet(dexM), d=dexOf(dexY,dexM);
+  const got=set.filter(c=>d[c.id]).length;
+  document.getElementById("dexYM").textContent=dexM+"月";
+  document.getElementById("dexSub").textContent=set.length
+    ? `${MONTHTHEME[dexM]||""}　${got} / ${set.length} しゅるい`
+    : "この月の ガチャは まだ ありません";
+  const t=new Date();
+  document.getElementById("dexPrev").disabled=(dexY===FIRST_YM[0]&&dexM===FIRST_YM[1]);
+  document.getElementById("dexNext").disabled=(dexY===t.getFullYear()&&dexM===t.getMonth()+1);
+  const g=document.getElementById("dexGrid");g.innerHTML="";
+  set.forEach(c=>{
+    const has=!!d[c.id];
+    const b=document.createElement("button");
+    b.className="dexcell "+(has?("got"+(c.r===3?" r3":"")):"no")+(dexPick===c.id?" pick":"");
+    b.innerHTML=c.svg+`<span class="dn">${has?esc(c.nm):"？"}</span>`;
+    b.onclick=()=>{
+      if(!has){document.getElementById("dexTip").textContent="まだ であって いないよ";dexPick=null;}
+      else{dexPick=c.id;document.getElementById("dexTip").textContent=c.tip;}
+      dexOpen();
+    };
+    g.appendChild(b);
+  });
+  const tp=document.getElementById("dexTip");
+  if(!dexPick)tp.textContent=got?"タップすると おはなしが よめるよ":"ガチャを まわして あつめよう";
+  openPanel("dexPanel");
 }
 
 /* ===== よていの パネル ===== */
@@ -1222,8 +1670,9 @@ document.getElementById("addCard").onclick=()=>{
 
 function openPanel(id){document.getElementById("ovl").classList.add("on");document.getElementById(id).classList.add("on");}
 function closePanel(){
+  clearTimeout(gTimer);gBusy=false;
   document.getElementById("ovl").classList.remove("on");
-  ["cfg","cardPanel","planPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
+  ["cfg","cardPanel","planPanel","gachaPanel","dexPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
   render();
 }
 
@@ -1258,6 +1707,13 @@ document.getElementById("toFree").onclick=()=>{closePanel();setFree(true);render
 document.getElementById("freeEnd").onclick=()=>{setFree(false);render();};
 document.getElementById("planBtn").onclick=()=>{setPlanEdit(!planEdit);render();};
 document.getElementById("qClose").onclick=closePanel;
+document.getElementById("gachaBtn").onclick=gachaOpen;
+document.getElementById("gAgain").onclick=gachaRoll;
+document.getElementById("gClose").onclick=closePanel;
+document.getElementById("dexBtn").onclick=()=>{const t=new Date();dexY=t.getFullYear();dexM=t.getMonth()+1;dexPick=null;dexOpen();};
+document.getElementById("dexPrev").onclick=()=>dexShift(-1);
+document.getElementById("dexNext").onclick=()=>dexShift(1);
+document.getElementById("dexClose").onclick=closePanel;
 document.getElementById("freeAdd").onclick=addFreePlan;
 document.getElementById("freeTxt").addEventListener("keydown",e=>{if(e.key==="Enter")addFreePlan();});
 document.getElementById("ovl").onclick=closePanel;
@@ -1273,6 +1729,8 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
     if(o.data)S.data=o.data;
     if(o.cv)S.cv=o.cv;
     if(o.sound!==undefined)S.sound=o.sound;
+    if(o.dex)S.dex=o.dex;
+    if(o.pull)S.pull=o.pull;
   }catch(e){}}
   // よく使うカードを先頭にそろえる（1どだけ）
   if(!S.cv||S.cv<2){
@@ -1287,14 +1745,18 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
       if(r.s&&OLDSEAL[r.s])r.s=OLDSEAL[r.s];
     }));
   }
-  if(S.cv!==3){S.cv=3;save();}
+  if(S.cv!==4){
+    if((S.cv||0)<4){S.dex={};S.pull={};}   // 月ごとの ずかんに きりかえ
+    S.cv=4;save();
+  }
   // むかしの ◎ や ♥ は ぜんぶ スターに
   let changed=false;
   Object.values(S.data).forEach(days=>Object.values(days).forEach(r=>{
     if(r.m&&r.m!=="star"){r.m="star";changed=true;}
   }));
   if(changed)save();
-  S.kids.forEach((k,i)=>{S.data[k.id]=S.data[k.id]||{};if(!k.av)k.av=i===0?"girl":"boy";});
+  S.dex=S.dex||{};S.pull=S.pull||{};
+  S.kids.forEach((k,i)=>{S.data[k.id]=S.data[k.id]||{};S.dex[k.id]=S.dex[k.id]||{};S.pull[k.id]=S.pull[k.id]||{};if(!k.av)k.av=i===0?"girl":"boy";});
   current=S.kids[0].id;
   renderKids();renderDows();render();setPlanEdit(false);setFree(false);
   wasNight=isNight();
