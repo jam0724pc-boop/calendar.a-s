@@ -324,6 +324,19 @@ button{font-family:inherit;color:inherit}
 .dexhead button:disabled{opacity:.3;cursor:default}
 .dexgrid{max-height:44vh}
 
+.pinview{display:flex;justify-content:center;gap:16px;margin:10px 0 18px}
+.pinview i{width:17px;height:17px;border-radius:50%;background:#fff;border:2px solid var(--line)}
+.pinview i.on{background:var(--ink);border-color:var(--ink)}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px;margin:0 auto}
+.keypad button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:16px 0;
+  font-size:1.5rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--ink)}
+.keypad button:active{background:var(--paper-deep)}
+.keypad button.sm{font-size:.95rem}
+.shake{animation:shake .32s}
+@keyframes shake{25%{transform:translate(-50%,-50%) translateX(-8px)}75%{transform:translate(-50%,-50%) translateX(8px)}}
+@media (max-width:899px){.shake{animation:shakem .32s}
+  @keyframes shakem{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}}
+
 /* ===== ずかん ===== */
 .dexgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:9px;
   max-height:46vh;overflow:auto;padding:4px 2px}
@@ -570,6 +583,14 @@ button{font-family:inherit;color:inherit}
 <div class="cheer" id="cheer" aria-hidden="true"></div>
 <div class="ovl" id="ovl"></div>
 
+<div class="panel" id="pinPanel" role="dialog" aria-modal="true">
+  <h2>おとなの かた へ</h2>
+  <div class="sub">4けたの あんしょうばんごうを いれてください</div>
+  <div class="pinview" id="pinView"><i></i><i></i><i></i><i></i></div>
+  <div class="keypad" id="keypad"></div>
+  <button class="close" id="pinCancel">やめる</button>
+</div>
+
 <div class="panel gpanel" id="gachaPanel" role="dialog" aria-modal="true">
   <h2 id="gTitle"></h2>
   <div class="gstage" id="gstage"></div>
@@ -706,7 +727,7 @@ const avatarOf=k=>(AVATARS[k.av]||AVATARS.girl)(k.color);
 
 let S={
   kids:[{id:"k1",name:"明音",yomi:"あかね",color:"#e8566e",av:"girl"},{id:"k2",name:"颯真",yomi:"そうま",color:"#3f8fce",av:"boy"}],
-  sound:true, dex:{}, pull:{}, cv:4, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
+  sound:true, pin:"5225", dex:{}, pull:{}, cv:4, cards:JSON.parse(JSON.stringify(DEFAULT_CARDS)), data:{k1:{},k2:{}}
 };
 let current="k1", view=new Date(), mode="month", picking=null, justPlaced=null;
 let planEdit=false, planTimer=null, freeSticker=false, freeTimer=null;
@@ -1349,6 +1370,37 @@ function machineSVG(){
   </svg>`;
 }
 
+let pinBuf="", pinOkUntil=0;
+function drawPin(){
+  document.querySelectorAll("#pinView i").forEach((el,i)=>el.classList.toggle("on",i<pinBuf.length));
+}
+(function buildKeypad(){
+  const kp=document.getElementById("keypad");if(!kp)return;
+  ["1","2","3","4","5","6","7","8","9","del","0","ok"].forEach(k=>{
+    const b=document.createElement("button");b.type="button";
+    if(k==="del"){b.className="sm";b.textContent="けす";b.onclick=()=>{pinBuf=pinBuf.slice(0,-1);drawPin();};}
+    else if(k==="ok"){b.className="sm";b.textContent="OK";b.onclick=tryPin;}
+    else{b.textContent=k;b.onclick=()=>{if(pinBuf.length<4){pinBuf+=k;drawPin();
+      if(pinBuf.length===4)setTimeout(tryPin,120);}};}
+    kp.appendChild(b);
+  });
+})();
+function tryPin(){
+  if(pinBuf===(S.pin||"5225")){
+    pinOkUntil=Date.now()+2*60*1000;
+    pinBuf="";drawPin();
+    document.getElementById("pinPanel").classList.remove("on");
+    gachaOpen();
+  }else{
+    const el=document.getElementById("pinPanel");
+    el.classList.add("shake");setTimeout(()=>el.classList.remove("shake"),340);
+    pinBuf="";drawPin();
+  }
+}
+function askGacha(){
+  if(Date.now()<pinOkUntil){gachaOpen();return;}
+  pinBuf="";drawPin();openPanel("pinPanel");
+}
 function updateGachaBtn(){
   const b=document.getElementById("gachaBtn");if(!b)return;
   const st=canPull();
@@ -1672,7 +1724,7 @@ function openPanel(id){document.getElementById("ovl").classList.add("on");docume
 function closePanel(){
   clearTimeout(gTimer);gBusy=false;
   document.getElementById("ovl").classList.remove("on");
-  ["cfg","cardPanel","planPanel","gachaPanel","dexPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
+  ["cfg","cardPanel","planPanel","gachaPanel","dexPanel","pinPanel"].forEach(i=>document.getElementById(i).classList.remove("on"));
   render();
 }
 
@@ -1707,7 +1759,8 @@ document.getElementById("toFree").onclick=()=>{closePanel();setFree(true);render
 document.getElementById("freeEnd").onclick=()=>{setFree(false);render();};
 document.getElementById("planBtn").onclick=()=>{setPlanEdit(!planEdit);render();};
 document.getElementById("qClose").onclick=closePanel;
-document.getElementById("gachaBtn").onclick=gachaOpen;
+document.getElementById("gachaBtn").onclick=askGacha;
+document.getElementById("pinCancel").onclick=()=>{pinBuf="";drawPin();closePanel();};
 document.getElementById("gAgain").onclick=gachaRoll;
 document.getElementById("gClose").onclick=closePanel;
 document.getElementById("dexBtn").onclick=()=>{const t=new Date();dexY=t.getFullYear();dexM=t.getMonth()+1;dexPick=null;dexOpen();};
@@ -1731,6 +1784,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
     if(o.sound!==undefined)S.sound=o.sound;
     if(o.dex)S.dex=o.dex;
     if(o.pull)S.pull=o.pull;
+    if(o.pin)S.pin=o.pin;
   }catch(e){}}
   // よく使うカードを先頭にそろえる（1どだけ）
   if(!S.cv||S.cv<2){
