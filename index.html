@@ -99,6 +99,25 @@ button{font-family:inherit;color:inherit}
 .dline .d .w{display:block;font-size:1.02rem;font-weight:700;margin-top:2px;color:#5c5545}
 .dline .d small{display:block;font-size:.72rem;color:var(--ink-soft);font-weight:500;margin-top:2px}
 
+
+/* ことし・ねんど の のこり */
+.card-box.left{flex:none;padding:8px 12px 9px;display:flex;flex-direction:column;gap:6px}
+.lrow{display:flex;flex-direction:column;gap:3px}
+.lrow+.lrow{border-top:1.5px dashed #e6dcc8;padding-top:6px}
+.lhead{display:flex;align-items:baseline;gap:5px;font-weight:800;font-size:.95rem;color:#5c5545;white-space:nowrap}
+.lic{font-size:1.1rem;line-height:1;align-self:center}
+.lnum{margin-left:auto;font-size:.9rem;font-weight:800;color:#5c5545}
+.lnum b{font-size:1.75rem;font-weight:900;margin:0 3px;letter-spacing:-.02em;line-height:1}
+.lnum.last b{font-size:1.1rem}
+.lrow.y .lnum b{color:#d9584e}
+.lrow.f .lnum b{color:#d4739a}
+.lfoot{display:flex;align-items:center;gap:7px}
+.lbar{flex:1;height:8px;border-radius:5px;background:#f1eadb;overflow:hidden}
+.lbar i{display:block;height:100%;border-radius:5px;transition:width .6s ease}
+.lrow.y .lbar i{background:linear-gradient(90deg,#f7a95a,#d9584e)}
+.lrow.f .lbar i{background:linear-gradient(90deg,#f9cdd8,#d4739a)}
+.lnote{font-size:.66rem;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+
 /* 3日ひょうじ */
 .three #dows{display:none}
 .three #grid{grid-template-columns:repeat(3,1fr)}
@@ -483,6 +502,7 @@ button{font-family:inherit;color:inherit}
 .strip .undo{border:2px solid #ded3bd;background:#fff;border-radius:22px;
   padding:9px;font-weight:700;font-size:.88rem;cursor:pointer;box-shadow:0 1px 2px rgba(120,100,70,.12)}
 .strip .undo:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.strip .foot .undo{flex:1}
 .strip.hint{animation:hint .6s}
 @keyframes hint{0%,100%{transform:none}25%{transform:translateY(-5px)}50%{transform:translateY(3px)}75%{transform:translateY(-2px)}}
 .holding #grid .cell:not(.empty){box-shadow:0 0 0 2px rgba(180,168,142,.55) inset}
@@ -545,6 +565,17 @@ button{font-family:inherit;color:inherit}
 
     <div class="card-box now">
       <div class="dline"><span class="ic" id="tIcon">☀️</span><span class="d"><span id="tDate">—</span><span class="w" id="tDow"></span></span></div>
+    </div>
+
+    <div class="card-box left" id="leftBox">
+      <div class="lrow y">
+        <div class="lhead"><span class="lic">🎍</span><span class="lnm">ことし</span><span class="lnum" id="lYNum">あと<b id="lY">—</b>にち</span></div>
+        <div class="lfoot"><div class="lbar"><i id="lYBar"></i></div><span class="lnote" id="lYNote"></span></div>
+      </div>
+      <div class="lrow f">
+        <div class="lhead"><span class="lic">🌸</span><span class="lnm">ねんど</span><span class="lnum" id="lFNum">あと<b id="lF">—</b>にち</span></div>
+        <div class="lfoot"><div class="lbar"><i id="lFBar"></i></div><span class="lnote" id="lFNote"></span></div>
+      </div>
     </div>
 
     <div class="strip" id="strip"></div>
@@ -1092,8 +1123,24 @@ function renderSide(){
   document.getElementById("tIcon").textContent=DOW[w].ic;
   document.getElementById("tDate").textContent=`${t.getMonth()+1}がつ ${t.getDate()}にち`;
   document.getElementById("tDow").textContent=DOW[w].nm;
-
-
+  renderLeft();
+}
+/* ことし・ねんど あと なんにち（きょうは かぞえない） */
+function renderLeft(){
+  const t=new Date(), today=new Date(t.getFullYear(),t.getMonth(),t.getDate());
+  const DAY=86400000, diff=(a,b)=>Math.round((b-a)/DAY);
+  const put=(id,start,end,noteTxt)=>{
+    const left=diff(today,end), total=diff(start,end)+1, done=diff(start,today)+1;
+    const num=document.getElementById(id+"Num");
+    num.classList.toggle("last",left===0);
+    num.innerHTML=left===0?`<b>さいごの ひ！</b>`:`あと<b id="${id}">${left}</b>にち`;
+    document.getElementById(id+"Note").textContent=noteTxt;
+    document.getElementById(id+"Bar").style.width=Math.min(100,Math.max(2,done/total*100)).toFixed(1)+"%";
+  };
+  const y=today.getFullYear();
+  put("lY",new Date(y,0,1),new Date(y,11,31),"12がつ31にちまで");
+  const fy=today.getMonth()>=3?y:y-1;
+  put("lF",new Date(fy,3,1),new Date(fy+1,2,31),"3がつ31にちまで");
 }
 function stHTML(d,sl){
   const rot=((d.getDate()*37)%9)-4;   // 日ごとに すこし かたむける
@@ -1404,12 +1451,10 @@ function renderStrip(){
   el.appendChild(m);
 
   const f=document.createElement("div");f.className="foot";
-  const c=document.createElement("span");c.className="cnt";
-  c.innerHTML=`こんげつ<b>${cntVal}</b>こ`;
   const u=document.createElement("button");
   u.className="undo";u.textContent="↩ もどす";u.disabled=!hist.length;
   u.onclick=undo;
-  f.appendChild(c);f.appendChild(u);el.appendChild(f);
+  f.appendChild(u);el.appendChild(f);
 }
 function hold(id){
   held=(held===id)?null:id;
@@ -1982,7 +2027,9 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closePanel();});
   current=S.kids[0].id;
   renderKids();renderDows();render();setPlanEdit(false);setFree(false);
   wasNight=isNight();
-  setInterval(()=>{const n=isNight();if(n!==wasNight){wasNight=n;renderStrip();}},60000);
+  let lastDay=key(new Date());
+  setInterval(()=>{const n=isNight();if(n!==wasNight){wasNight=n;renderStrip();}
+    const k=key(new Date());if(k!==lastDay){lastDay=k;render();}},60000);
 })();
 </script>
 </body>
