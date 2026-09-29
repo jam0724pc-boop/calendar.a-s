@@ -331,6 +331,10 @@ button{font-family:inherit;color:inherit}
 .gpanel h2{margin:0 0 4px;font-size:1.3rem}
 .gcount{margin-left:10px;font-size:.88rem;font-weight:700;color:#8a8170;
   background:#f4eee2;border-radius:14px;padding:3px 11px;vertical-align:3px}
+.gnote{display:inline-block;margin-top:8px;font-size:.92rem;font-weight:800;color:#c9963a;line-height:1.6}
+.gnote.big{display:block;margin:0 0 10px;font-size:1.05rem;color:#d4741c}
+.tools .gachabtn.catchup{background:linear-gradient(180deg,#ffe9a8,#f3c44e);border-color:#e0a92e;
+  color:#7a5410;font-size:.88rem;padding-right:20px}
 .gmsg{display:grid;justify-items:center;gap:12px;font-size:3.2rem;line-height:1}
 .gmsg div{font-size:1.12rem;font-weight:700;color:#5c5545;line-height:1.7;text-align:center}
 .gmsg.done div{color:#c9963a}
@@ -1551,11 +1555,20 @@ function charOf(m,id){return monthSet(m).find(c=>c.id===id);}
 function slotNow(){return new Date().getHours()>=NIGHT_FROM?"pm":"am";}
 function pullLog(){S.pull=S.pull||{};S.pull[current]=S.pull[current]||{};return S.pull[current];}
 function pullsToday(){const l=pullLog();return l[key(new Date())]||{};}
+/* つきの さいごの ひ（この日は のこりを ぜんぶ まわせる） */
+function lastDayOf(y,m){return new Date(y,m,0).getDate();}
+function isCatchUp(d){const t=d||new Date();return t.getDate()===lastDayOf(t.getFullYear(),t.getMonth()+1);}
+function daysToMonthEnd(){const t=new Date();return lastDayOf(t.getFullYear(),t.getMonth()+1)-t.getDate();}
+function restCount(){
+  const t=new Date(), m=t.getMonth()+1, d=dexOf(t.getFullYear(),m);
+  return monthSet(m).filter(c=>!d[c.id]).length;
+}
 function canPull(){
   const t=new Date();
   if(!monthSet(t.getMonth()+1).length)return "none";
   const d=dexOf(t.getFullYear(),t.getMonth()+1);
   if(monthSet(t.getMonth()+1).every(c=>d[c.id]))return "done";
+  if(isCatchUp())return "ok";
   return pullsToday()[slotNow()]?"used":"ok";
 }
 function usePull(){
@@ -1636,7 +1649,9 @@ function updateGachaBtn(){
   const st=canPull();
   b.classList.toggle("ready",st==="ok");
   b.classList.toggle("off",st!=="ok");
-  b.textContent=st==="ok"?"🎁 ガチャ":(st==="done"?"🎁 コンプ！":"🎁 ガチャ");
+  b.textContent=st==="done"?"🎁 コンプ！"
+    :(st==="ok"&&isCatchUp()?`🎁 のこり${restCount()}`:"🎁 ガチャ");
+  b.classList.toggle("catchup",st==="ok"&&isCatchUp());
 }
 function gachaOpen(){
   const t=new Date(), m=t.getMonth()+1;
@@ -1655,12 +1670,16 @@ function gachaOpen(){
   }else if(state==="done"){
     st.innerHTML=`<div class="gmsg done">🎉<div>${m}月の なかまを<br>ぜんぶ あつめたよ！</div></div>`;
   }else if(state==="used"){
-    const msg=slotNow()==="am"?"あさの ガチャは まわしたよ<br>よるに また あえるね"
-                              :"きょうの ガチャは おしまい<br>あしたの あさ また まわそう";
+    const nokori=set.length-got, ato=daysToMonthEnd();
+    let msg=slotNow()==="am"?"あさの ガチャは まわしたよ<br>よるに また あえるね"
+                            :"きょうの ガチャは おしまい<br>あしたの あさ また まわそう";
+    if(ato<=5)msg+=`<br><span class="gnote">${lastDayOf(t.getFullYear(),m)}にちは のこり${nokori}こ ぜんぶ まわせるよ</span>`;
     st.innerHTML=`<div class="gmsg wait">⏳<div>${msg}</div></div>`;
   }else{
-    const lbl=slotNow()==="am"?"あさの ガチャ":"よるの ガチャ";
+    const cu=isCatchUp(), nokori=set.length-got;
+    const lbl=cu?`のこり ${nokori}こ`:(slotNow()==="am"?"あさの ガチャ":"よるの ガチャ");
     st.innerHTML=`<div>${machineSVG()}<div style="margin-top:10px">`+
+      (cu?`<div class="gnote big">きょうは つきの さいごの ひ！<br>のこりを ぜんぶ まわそう</div>`:``)+
       `<button class="gstart" id="gStart">${lbl}を まわす！</button></div></div>`;
     st.querySelector(".gmachine").style.animation="none";
     document.getElementById("gStart").onclick=gachaRoll;
@@ -1712,7 +1731,7 @@ function gachaRoll(){
       `${m}月の ガチャ<span class="gcount">${got} / ${set.length}</span>`;
     setTimeout(()=>{
       const again=document.getElementById("gAgain");
-      if(canPull()==="ok"){again.textContent="もう いちど";again.style.display="";}
+      if(canPull()==="ok"){again.textContent=isCatchUp()?`もう いちど（のこり ${set.length-got}こ）`:"もう いちど";again.style.display="";}
       else if(got>=set.length){again.textContent="🎉 コンプリート！";again.style.display="";again.disabled=true;}
       gBusy=false;
       if(checkComplete(t.getFullYear(),m))setTimeout(compCelebrate,650);
