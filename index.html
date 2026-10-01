@@ -1190,7 +1190,51 @@ function markSVG(id){
     <path d="M43.4 65.6c4-1.6 9.2-1.6 13.2 0-1.8 2.2-4.2 3.2-6.6 3.2s-4.8-1-6.6-3.2z" fill="#f4a0a8"/>
   </svg>`;
 }
-let cheerT=null, actx=null;
+let cheerT=null, actx=null, audioUnlocked=false;
+/* ===== おとの したじゅんび =====
+   iPad/iPhoneは「ゆびで さわった とき」しか おとを ならせない。
+   さいしょの タップで むおんを 1かい ならして、いつでも なるように しておく。 */
+function ensureAudio(){
+  try{
+    if(!actx){
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC)return null;
+      actx=new AC();
+    }
+    return actx;
+  }catch(e){return null;}
+}
+function unlockAudio(){
+  const a=ensureAudio();if(!a)return;
+  if(a.state!=="running"){try{a.resume();}catch(e){}}
+  if(audioUnlocked)return;
+  try{
+    const src=a.createBufferSource();
+    src.buffer=a.createBuffer(1,1,22050);
+    src.connect(a.destination);src.start(0);
+    const o=a.createOscillator(),g=a.createGain();
+    g.gain.value=.00001;o.connect(g);g.connect(a.destination);
+    o.start();o.stop(a.currentTime+.03);
+    audioUnlocked=true;
+  }catch(e){}
+}
+["pointerdown","touchstart","touchend","mousedown","keydown"].forEach(ev=>{
+  document.addEventListener(ev,unlockAudio,{passive:true,capture:true});
+});
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden&&actx&&actx.state!=="running"){try{actx.resume();}catch(e){}}
+});
+/* おとが でる じょうたいに なってから ならす */
+function withAudio(fn){
+  const a=ensureAudio();if(!a)return;
+  const go=()=>{try{fn();}catch(e){}};
+  if(a.state==="running"){go();return;}
+  try{
+    const pr=a.resume();
+    if(pr&&pr.then)pr.then(go).catch(()=>setTimeout(go,80));
+    else setTimeout(go,80);
+  }catch(e){setTimeout(go,80);}
+}
 function cheer(center){
   const el=document.getElementById("cheer");
   el.innerHTML="";
@@ -1229,9 +1273,7 @@ function cheer(center){
 }
 function fanfare(){
   if(S.sound===false)return;
-  try{
-    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
-    if(actx.state==="suspended")actx.resume();
+  withAudio(()=>{
     const t0=actx.currentTime+0.03;
     const note=(f,dt,dur,type,vol)=>{
       const o=actx.createOscillator(),g=actx.createGain();
@@ -1262,7 +1304,7 @@ function fanfare(){
       const dt=.9+i*.12;
       note(1700+Math.random()*2100,dt,.3,"sine",.065);
     }
-  }catch(e){}
+  });
 }
 function celebrate(){cheer();fanfare();}
 
@@ -1742,9 +1784,7 @@ function gachaRoll(){
 
 function gachaSound(){
   if(S.sound===false)return;
-  try{
-    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
-    if(actx.state==="suspended")actx.resume();
+  withAudio(()=>{
     const t0=actx.currentTime+0.02;
     const note=(f,dt,dur,type,vol)=>{
       const o=actx.createOscillator(),g=actx.createGain();
@@ -1763,7 +1803,7 @@ function gachaSound(){
     note(C6,2.86,.5);[C6,E6,G6].forEach((f,i)=>note(f,3.2,1.1,"triangle",.17-i*.03));
     note(130.81,2.45,.7,"sine",.15);note(130.81,3.2,1.2,"sine",.16);
     for(let i=0;i<16;i++)note(1800+Math.random()*1800,2.6+i*.09,.26,"sine",.055);
-  }catch(e){}
+  });
 }
 
 /* ===== ずかん（月ごと） ===== */
