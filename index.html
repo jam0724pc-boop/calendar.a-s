@@ -111,11 +111,16 @@ button{font-family:inherit;color:inherit}
 .lnum.last b{font-size:1.1rem}
 .lrow.y .lnum b{color:#d9584e}
 .lrow.f .lnum b{color:#d4739a}
+.lrow.b .lnum b{color:#e0603f}
+.lrow.b .lnum.last b{color:#e0603f;font-size:1.05rem}
+.lrow[hidden]{display:none}
+.lrow.b .lnm{font-size:.8rem;letter-spacing:-.02em}
 .lfoot{display:flex;align-items:center;gap:7px}
 .lbar{flex:1;height:8px;border-radius:5px;background:#f1eadb;overflow:hidden}
 .lbar i{display:block;height:100%;border-radius:5px;transition:width .6s ease}
 .lrow.y .lbar i{background:linear-gradient(90deg,#f7a95a,#d9584e)}
 .lrow.f .lbar i{background:linear-gradient(90deg,#f9cdd8,#d4739a)}
+.lrow.b .lbar i{background:linear-gradient(90deg,#ffd36b,#f08a5d,#e0603f)}
 .lnote{font-size:.66rem;font-weight:700;color:var(--ink-soft);white-space:nowrap}
 
 /* 3日ひょうじ */
@@ -562,7 +567,7 @@ button{font-family:inherit;color:inherit}
 
 /* ひだりの れつが はみでないように（Safariの バーで たかさが ひくい とき） */
 .side>*{flex-shrink:0}
-@media (max-height:800px){
+@media (max-height:900px){
   .kid{padding:8px 6px 7px;gap:3px;font-size:1.2rem}
   .kid .av{width:60px;height:60px}
   .card-box.now{padding:9px 10px 10px}
@@ -575,7 +580,7 @@ button{font-family:inherit;color:inherit}
   .strip .undo{padding:6px}
   .side{gap:6px}
 }
-@media (max-height:700px){
+@media (max-height:780px){
   .kid .av{width:48px;height:48px}
   .kid .yomi{display:none}
   .strip .s{width:40px;height:40px}
@@ -607,6 +612,10 @@ button{font-family:inherit;color:inherit}
     </div>
 
     <div class="card-box left" id="leftBox">
+      <div class="lrow b" id="lBRow" hidden>
+        <div class="lhead"><span class="lic">🎂</span><span class="lnm">たんじょうび</span><span class="lnum" id="lBNum">あと<b id="lB">—</b>にち</span></div>
+        <div class="lfoot"><div class="lbar"><i id="lBBar"></i></div><span class="lnote" id="lBNote"></span></div>
+      </div>
       <div class="lrow y">
         <div class="lhead"><span class="lic">🎍</span><span class="lnm">ことし</span><span class="lnum" id="lYNum">あと<b id="lY">—</b>にち</span></div>
         <div class="lfoot"><div class="lbar"><i id="lYBar"></i></div><span class="lnote" id="lYNote"></span></div>
@@ -1189,7 +1198,22 @@ function renderLeft(){
   put("lY",new Date(y,0,1),new Date(y,11,31),"12がつ31にちまで");
   const fy=today.getMonth()>=3?y:y-1;
   put("lF",new Date(fy,3,1),new Date(fy+1,2,31),"3がつ31にちまで");
+  /* たんじょうび（こどもごと） */
+  const row=document.getElementById("lBRow"), bd=BIRTHDAY[current];
+  row.hidden=!bd;
+  if(bd){
+    const [by,bm,bdd]=bd.split("-").map(Number);
+    let nx=new Date(y,bm-1,bdd); if(nx<today) nx=new Date(y+1,bm-1,bdd);
+    const prev=new Date(nx.getFullYear()-1,bm-1,bdd);
+    const left=diff(today,nx), age=nx.getFullYear()-by;
+    const num=document.getElementById("lBNum");
+    num.classList.toggle("last",left===0);
+    num.innerHTML=left===0?`<b>おめでとう🎉</b>`:`あと<b id="lB">${left}</b>にち`;
+    document.getElementById("lBNote").textContent=left===0?`きょうで ${age}さい！`:`${bm}がつ${bdd}にちで ${age}さい`;
+    document.getElementById("lBBar").style.width=(left===0?100:Math.min(100,Math.max(2,diff(prev,today)/diff(prev,nx)*100))).toFixed(1)+"%";
+  }
 }
+const BIRTHDAY={k1:"2023-02-25"};   /* たんじょうび： k1=あかね  k2=そうま（わかったら "YYYY-MM-DD" を たしてね） */
 function stHTML(d,sl){
   const rot=((d.getDate()*37)%9)-4;   // 日ごとに すこし かたむける
   return `<span class="st" style="--sc:${sl.c};--rot:${rot}deg"><i class="${justPlaced===key(d)?"new":""}"></i></span>`;
