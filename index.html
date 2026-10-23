@@ -1213,7 +1213,7 @@ function renderLeft(){
     document.getElementById("lBBar").style.width=(left===0?100:Math.min(100,Math.max(2,diff(prev,today)/diff(prev,nx)*100))).toFixed(1)+"%";
   }
 }
-const BIRTHDAY={k1:"2023-02-25"};   /* たんじょうび： k1=あかね  k2=そうま（わかったら "YYYY-MM-DD" を たしてね） */
+const BIRTHDAY={k1:"2023-02-25",k2:"2023-02-25"};   /* たんじょうび： k1=あかね  k2=そうま */
 function stHTML(d,sl){
   const rot=((d.getDate()*37)%9)-4;   // 日ごとに すこし かたむける
   return `<span class="st" style="--sc:${sl.c};--rot:${rot}deg"><i class="${justPlaced===key(d)?"new":""}"></i></span>`;
@@ -1236,43 +1236,62 @@ function markSVG(id){
     <path d="M43.4 65.6c4-1.6 9.2-1.6 13.2 0-1.8 2.2-4.2 3.2-6.6 3.2s-4.8-1-6.6-3.2z" fill="#f4a0a8"/>
   </svg>`;
 }
-let cheerT=null, actx=null, audioUnlocked=false;
+let cheerT=null, actx=null, audioUnlocked=false, audioStale=false, audioChk=null;
 /* ===== おとの したじゅんび =====
    iPad/iPhoneは「ゆびで さわった とき」しか おとを ならせない。
-   さいしょの タップで むおんを 1かい ならして、いつでも なるように しておく。 */
-function ensureAudio(){
+   さわる たびに おとの じょうたいを しらべて、ねむって いたら つくりなおす。
+   （スリープや ほかの アプリから もどると、おとが きえて しまう ことが あるため） */
+function newAudio(){
   try{
-    if(!actx){
-      const AC=window.AudioContext||window.webkitAudioContext;
-      if(!AC)return null;
-      actx=new AC();
-    }
+    if(actx){try{actx.close();}catch(e){}}
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC){actx=null;return null;}
+    actx=new AC();
+    actx.onstatechange=()=>{ if(actx&&(actx.state==="interrupted"||actx.state==="closed"))audioStale=true; };
+    audioUnlocked=false; audioStale=false; audioChk=null;
     return actx;
-  }catch(e){return null;}
+  }catch(e){actx=null;return null;}
+}
+function ensureAudio(){ return actx||newAudio(); }
+/* じかんが すすんで いない（=こわれて いる）か しらべる */
+function audioFrozen(a){
+  const now=performance.now(), ct=a.currentTime;
+  const prev=audioChk; audioChk={now,ct};
+  if(!prev||a.state!=="running")return false;
+  const wall=(now-prev.now)/1000;
+  return wall>1 && (ct-prev.ct)<wall*0.2;
 }
 function unlockAudio(){
-  const a=ensureAudio();if(!a)return;
+  let a=actx;
+  if(!a||audioStale||a.state==="closed"||a.state==="interrupted"||audioFrozen(a)) a=newAudio();
+  if(!a)return;
   if(a.state!=="running"){try{a.resume();}catch(e){}}
-  if(audioUnlocked)return;
   try{
+    /* むおんを ならして「おとを だして いいよ」の きょかを もらう（まいかい） */
     const src=a.createBufferSource();
     src.buffer=a.createBuffer(1,1,22050);
     src.connect(a.destination);src.start(0);
-    const o=a.createOscillator(),g=a.createGain();
-    g.gain.value=.00001;o.connect(g);g.connect(a.destination);
-    o.start();o.stop(a.currentTime+.03);
+    if(!audioUnlocked){
+      const o=a.createOscillator(),g=a.createGain();
+      g.gain.value=.00001;o.connect(g);g.connect(a.destination);
+      o.start();o.stop(a.currentTime+.03);
+    }
     audioUnlocked=true;
+    audioChk={now:performance.now(),ct:a.currentTime};
   }catch(e){}
 }
 ["pointerdown","touchstart","touchend","mousedown","keydown"].forEach(ev=>{
   document.addEventListener(ev,unlockAudio,{passive:true,capture:true});
 });
-document.addEventListener("visibilitychange",()=>{
-  if(!document.hidden&&actx&&actx.state!=="running"){try{actx.resume();}catch(e){}}
-});
+/* がめんが かくれたら（スリープ・ほかの アプリ）、つぎに さわった とき つくりなおす */
+const markStale=()=>{ audioStale=true; if(actx){try{actx.suspend();}catch(e){}} };
+document.addEventListener("visibilitychange",()=>{ if(document.hidden)markStale(); });
+window.addEventListener("pagehide",markStale);
+window.addEventListener("pageshow",e=>{ if(e.persisted)audioStale=true; });
 /* おとが でる じょうたいに なってから ならす */
 function withAudio(fn){
-  const a=ensureAudio();if(!a)return;
+  let a=ensureAudio();if(!a)return;
+  if(audioStale||a.state==="closed"||a.state==="interrupted"){a=newAudio();if(!a)return;}
   const go=()=>{try{fn();}catch(e){}};
   if(a.state==="running"){go();return;}
   try{
