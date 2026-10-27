@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#faf7f1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>シールカレンダー</title>
@@ -567,6 +567,8 @@ button{font-family:inherit;color:inherit}
 
 /* ひだりの れつが はみでないように（Safariの バーで たかさが ひくい とき） */
 .side>*{flex-shrink:0}
+/* つづけて タップしても がめんが おおきく ならないように */
+html,body,button,a,input,select,label,.cell,.panel{touch-action:manipulation}
 @media (max-height:900px){
   .kid{padding:8px 6px 7px;gap:3px;font-size:1.2rem}
   .kid .av{width:60px;height:60px}
@@ -1280,6 +1282,9 @@ function unlockAudio(){
     audioChk={now:performance.now(),ct:a.currentTime};
   }catch(e){}
 }
+/* ピンチや ダブルタップで がめんが おおきく ならないように */
+["gesturestart","gesturechange","gestureend"].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+document.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
 ["pointerdown","touchstart","touchend","mousedown","keydown"].forEach(ev=>{
   document.addEventListener(ev,unlockAudio,{passive:true,capture:true});
 });
@@ -1728,10 +1733,15 @@ function drawPin(){
   const kp=document.getElementById("keypad");if(!kp)return;
   ["1","2","3","4","5","6","7","8","9","del","0","ok"].forEach(k=>{
     const b=document.createElement("button");b.type="button";
-    if(k==="del"){b.className="sm";b.textContent="けす";b.onclick=()=>{pinBuf=pinBuf.slice(0,-1);drawPin();};}
-    else if(k==="ok"){b.className="sm";b.textContent="OK";b.onclick=tryPin;}
-    else{b.textContent=k;b.onclick=()=>{if(pinBuf.length<4){pinBuf+=k;drawPin();
+    let act;
+    if(k==="del"){b.className="sm";b.textContent="けす";act=()=>{pinBuf=pinBuf.slice(0,-1);drawPin();};}
+    else if(k==="ok"){b.className="sm";b.textContent="OK";act=tryPin;}
+    else{b.textContent=k;act=()=>{if(pinBuf.length<4){pinBuf+=k;drawPin();
       if(pinBuf.length===4)setTimeout(tryPin,120);}};}
+    /* iPadで おなじ すうじを つづけて おしても かくだい しないように、
+       ゆびを はなした ときに すぐ うけつけて、ダブルタップを とめる */
+    b.addEventListener("touchend",e=>{e.preventDefault();act();},{passive:false});
+    b.addEventListener("click",act);
     kp.appendChild(b);
   });
 })();
